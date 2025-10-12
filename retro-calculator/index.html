@@ -121,6 +121,9 @@
         margin-top: 8px;
       }
 
+      .cell { display: grid; grid-template-rows: 14px 1fr; align-items: end; }
+      .label { font-size: 10px; color: #121212; text-align: center; letter-spacing: .02em; }
+
       .key {
         border-radius: var(--radius);
         padding: 8px;
@@ -142,9 +145,7 @@
       .key--beige { background: var(--beige-key); color: var(--beige-key-txt); }
       .key--red { background: var(--red-key); color: var(--red-key-txt); }
 
-      .kstack { line-height: 1; }
-      .kstack .secondary { font-size: 10px; opacity: .9; letter-spacing: .02em; }
-      .kstack .primary { font-size: 14px; margin-top: 2px; font-weight: 600; }
+      .primary { font-size: 14px; margin-top: 2px; font-weight: 600; line-height: 1; }
 
       .foot {
         display: flex; justify-content: flex-end; margin-top: 14px; color: #121212;
@@ -177,60 +178,60 @@
 
         <div class="grid" id="grid">
           <!-- řada 1 -->
-          <div class="key key--blue"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">F</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">3√</div><div class="primary">yˣ</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">Δ%</div><div class="primary">1/x</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">[</div><div class="primary">(</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">]</div><div class="primary">)</div></div></div>
+          <div class="cell"><div class="label">&nbsp;</div><div class="key key--blue"><div class="primary">F</div></div></div>
+          <div class="cell"><div class="label">3√</div><div class="key key--blue"><div class="primary">yˣ</div></div></div>
+          <div class="cell"><div class="label">Δ%</div><div class="key key--blue"><div class="primary">1/x</div></div></div>
+          <div class="cell"><div class="label">[</div><div class="key key--blue"><div class="primary">(</div></div></div>
+          <div class="cell"><div class="label">]</div><div class="key key--blue"><div class="primary">)</div></div></div>
 
           <!-- řada 2 -->
-          <div class="key key--blue"><div class="kstack"><div class="secondary">HYP</div><div class="primary">hyp</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">arcsin</div><div class="primary">sin</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">arccos</div><div class="primary">cos</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">arctan</div><div class="primary">tan</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">X!</div><div class="primary">X↔Y</div></div></div>
+          <div class="cell"><div class="label">HYP</div><div class="key key--blue"><div class="primary">hyp</div></div></div>
+          <div class="cell"><div class="label">arcsin</div><div class="key key--blue"><div class="primary">sin</div></div></div>
+          <div class="cell"><div class="label">arccos</div><div class="key key--blue"><div class="primary">cos</div></div></div>
+          <div class="cell"><div class="label">arctan</div><div class="key key--blue"><div class="primary">tan</div></div></div>
+          <div class="cell"><div class="label">X!</div><div class="key key--blue"><div class="primary">X↔Y</div></div></div>
 
           <!-- řada 3 -->
-          <div class="key key--blue"><div class="kstack"><div class="secondary">lg</div><div class="primary">ln</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">10ˣ</div><div class="primary">eˣ</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">√</div><div class="primary">x²</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">DMS</div><div class="primary">DEG</div></div></div>
-          <div class="key key--blue"><div class="kstack"><div class="secondary">→XY</div><div class="primary">→rα</div></div></div>
+          <div class="cell"><div class="label">lg</div><div class="key key--blue"><div class="primary">ln</div></div></div>
+          <div class="cell"><div class="label">10ˣ</div><div class="key key--blue"><div class="primary">eˣ</div></div></div>
+          <div class="cell"><div class="label">√</div><div class="key key--blue"><div class="primary">x²</div></div></div>
+          <div class="cell"><div class="label">DMS</div><div class="key key--blue"><div class="primary">DEG</div></div></div>
+          <div class="cell"><div class="label">→XY</div><div class="key key--blue"><div class="primary">→rα</div></div></div>
 
-        <!-- řada 4 – paměť (červené) -->
-          <button class="key key--red" data-action="mem-sub"><div class="kstack"><div class="secondary">δset</div><div class="primary">X-M</div></div></button>
-          <button class="key key--red" data-action="mem-clear"><div class="kstack"><div class="secondary">n(ΣX)</div><div class="primary">MC</div></div></button>
-          <button class="key key--red" data-action="mem-recall"><div class="kstack"><div class="secondary">δn-1(δn)</div><div class="primary">MR</div></div></button>
-          <button class="key key--red" data-action="mem-sub"><div class="kstack"><div class="secondary">x̄(Σx²)</div><div class="primary">X-M</div></div></button>
-          <button class="key key--red" data-action="mem-add"><div class="kstack"><div class="secondary">DATA(DEL)</div><div class="primary">M+</div></div></button>
+          <!-- řada 4 – paměť (červené) -->
+          <div class="cell"><div class="label">δset</div><button class="key key--red" data-action="mem-sub"><div class="primary">X-M</div></button></div>
+          <div class="cell"><div class="label">n(ΣX)</div><button class="key key--red" data-action="mem-clear"><div class="primary">MC</div></button></div>
+          <div class="cell"><div class="label">δn-1(δn)</div><button class="key key--red" data-action="mem-recall"><div class="primary">MR</div></button></div>
+          <div class="cell"><div class="label">x̄(Σx²)</div><button class="key key--red" data-action="mem-sub"><div class="primary">X-M</div></button></div>
+          <div class="cell"><div class="label">DATA(DEL)</div><button class="key key--red" data-action="mem-add"><div class="primary">M+</div></button></div>
 
           <!-- řada 5 7–9 a minus -->
-          <div class="key key--beige"><div class="kstack"><div class="secondary">π</div><div class="primary">EEX</div></div></div>
-          <button class="key key--black" data-digit="7"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">7</div></div></button>
-          <button class="key key--black" data-digit="8"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">8</div></div></button>
-          <button class="key key--black" data-digit="9"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">9</div></div></button>
-          <button class="key key--beige" data-op="-"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">−</div></div></button>
+          <div class="cell"><div class="label">π</div><div class="key key--beige"><div class="primary">EEX</div></div></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="7"><div class="primary">7</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="8"><div class="primary">8</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="9"><div class="primary">9</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--beige" data-op="-"><div class="primary">−</div></button></div>
 
           <!-- řada 6 4–6 a dělení -->
-          <button class="key key--beige" data-action="sign"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">+/−</div></div></button>
-          <button class="key key--black" data-digit="4"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">4</div></div></button>
-          <button class="key key--black" data-digit="5"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">5</div></div></button>
-          <button class="key key--black" data-digit="6"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">6</div></div></button>
-          <button class="key key--beige" data-op="/"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">÷</div></div></button>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--beige" data-action="sign"><div class="primary">+/−</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="4"><div class="primary">4</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="5"><div class="primary">5</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="6"><div class="primary">6</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--beige" data-op="/"><div class="primary">÷</div></button></div>
 
           <!-- řada 7 1–3 a násobení -->
-          <button class="key key--beige" data-action="clear"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">C</div></div></button>
-          <button class="key key--black" data-digit="1"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">1</div></div></button>
-          <button class="key key--black" data-digit="2"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">2</div></div></button>
-          <button class="key key--black" data-digit="3"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">3</div></div></button>
-          <button class="key key--beige" data-op="*"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">×</div></div></button>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--beige" data-action="clear"><div class="primary">C</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="1"><div class="primary">1</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="2"><div class="primary">2</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="3"><div class="primary">3</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--beige" data-op="*"><div class="primary">×</div></button></div>
 
           <!-- řada 8 0 , = a plus -->
-          <button class="key key--beige" data-action="clear-entry"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">CE</div></div></button>
-          <button class="key key--black" data-digit="0"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">0</div></div></button>
-          <button class="key key--black" data-action="decimal"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">,</div></div></button>
-          <button class="key key--beige" data-action="equals"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">=</div></div></button>
-          <button class="key key--beige" data-op="+"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">+</div></div></button>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--beige" data-action="clear-entry"><div class="primary">CE</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-digit="0"><div class="primary">0</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--black" data-action="decimal"><div class="primary">,</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--beige" data-action="equals"><div class="primary">=</div></button></div>
+          <div class="cell"><div class="label">&nbsp;</div><button class="key key--beige" data-op="+"><div class="primary">+</div></button></div>
         </div>
 
         <div class="foot"><span>MR 610</span></div>
@@ -342,4 +343,3 @@
     </script>
   </body>
   </html>
-
