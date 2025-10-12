@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Retro kalkulačka</title>
+    <style>
+      :root {
+        color-scheme: only light;
+        --body-bg: radial-gradient(circle at top, #fdf9e1 0%, #f5e7b2 40%, #f0d793 100%);
+        --shell-base: #2d2c34;
+        --shell-shadow: #1a1a22;
+        --shell-highlight: #3b3a44;
+        --screen-bg: linear-gradient(160deg, #c8d6a7, #a5b982);
+        --screen-glass: rgba(255, 255, 255, 0.32);
+        --screen-text: #141414;
+        --primary-key: #f7f2dd;
+        --primary-key-text: #332f25;
+        --accent-key: #d06c35;
+        --accent-key-text: #fff5ec;
+        --function-key: #c0b09a;
+        --function-key-text: #2d251d;
+        --grid-gap: clamp(10px, 1.4vmin, 20px);
+        --key-radius: clamp(10px, 2.2vmin, 18px);
+        --shell-padding: clamp(18px, 4vmin, 30px);
+        font-size: clamp(14px, 1.1vw + 10px, 18px);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: var(--body-bg);
+        font-family: "Courier New", "Lucida Console", monospace;
+        color: #222;
+      }
+
+      .calculator-wrapper {
+        position: relative;
+        width: min(420px, 92vw);
+      }
+
+      .shell-svg {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.25));
+      }
+
+      .calculator {
+        position: relative;
+        padding: calc(var(--shell-padding) * 1.1) var(--shell-padding);
+        border-radius: clamp(26px, 6vmin, 38px);
+        background: linear-gradient(120deg, var(--shell-highlight) 0%, var(--shell-base) 55%, var(--shell-shadow) 100%);
+        display: flex;
+        flex-direction: column;
+        gap: clamp(18px, 4vmin, 28px);
+      }
+
+      .branding {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.8rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: #d8d3bf;
+      }
+
+      .branding span:last-child {
+        font-size: 0.7rem;
+        letter-spacing: 0.3em;
+        color: #9e9985;
+      }
+
+      .display {
+        position: relative;
+        padding: clamp(18px, 4vmin, 26px);
+        border-radius: clamp(16px, 3.5vmin, 24px);
+        background: var(--screen-bg);
+        box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.18);
+        color: var(--screen-text);
+        text-align: right;
+        overflow: hidden;
+      }
+
+      .display::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(120deg, transparent 20%, var(--screen-glass) 55%, transparent 90%);
+        mix-blend-mode: screen;
+        pointer-events: none;
+      }
+
+      .display-history {
+        font-size: 0.8rem;
+        min-height: 1rem;
+        opacity: 0.65;
+        letter-spacing: 0.08em;
+      }
+
+      .display-value {
+        font-size: clamp(2.4rem, 8vw, 3.6rem);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.14em;
+        word-break: break-all;
+      }
+
+      .keypad {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: var(--grid-gap);
+      }
+
+      button {
+        position: relative;
+        border: none;
+        border-radius: var(--key-radius);
+        padding: clamp(16px, 4vmin, 20px);
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.05em;
+        cursor: pointer;
+        transition: transform 0.08s ease, box-shadow 0.12s ease;
+        box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2), inset 0 -4px 0 rgba(0, 0, 0, 0.25), 0 3px 8px rgba(0, 0, 0, 0.28);
+        text-transform: uppercase;
+      }
+
+      button:focus {
+        outline: 3px solid rgba(255, 255, 255, 0.28);
+        outline-offset: 2px;
+      }
+
+      button:active {
+        transform: translateY(2px);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -2px 0 rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.2);
+      }
+
+      .key-function {
+        background: linear-gradient(120deg, var(--function-key) 0%, #a28f78 100%);
+        color: var(--function-key-text);
+      }
+
+      .key-operator {
+        background: linear-gradient(120deg, #847d9f 0%, #5e597a 100%);
+        color: #f2efea;
+      }
+
+      .key-digit {
+        background: linear-gradient(120deg, var(--primary-key) 0%, #e7dac1 100%);
+        color: var(--primary-key-text);
+      }
+
+      .key-equals {
+        background: linear-gradient(120deg, var(--accent-key) 0%, #9d4a1f 100%);
+        color: var(--accent-key-text);
+      }
+
+      .key-zero {
+        grid-column: span 2;
+      }
+
+      .indicator {
+        display: flex;
+        gap: 6px;
+        margin-top: -10px;
+        margin-bottom: -10px;
+      }
+
+      .indicator span {
+        flex: 1;
+        height: 4px;
+        border-radius: 10px;
+        background: linear-gradient(90deg, rgba(245, 236, 200, 0.8), rgba(150, 130, 100, 0.5));
+        opacity: 0.6;
+      }
+
+      @media (max-width: 440px) {
+        :root {
+          --grid-gap: clamp(8px, 2vw, 12px);
+          --key-radius: clamp(10px, 4vw, 16px);
+        }
+
+        button {
+          font-size: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="calculator-wrapper">
+      <svg class="shell-svg" viewBox="0 0 420 600" aria-hidden="true">
+        <defs>
+          <linearGradient id="shell-edge" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="#5b5967" />
+            <stop offset="60%" stop-color="#2d2c34" />
+            <stop offset="100%" stop-color="#16161d" />
+          </linearGradient>
+          <linearGradient id="shell-glow" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stop-color="rgba(255, 255, 255, 0.22)" />
+            <stop offset="40%" stop-color="rgba(255, 255, 255, 0)" />
+          </linearGradient>
+        </defs>
+        <path
+          d="M48 12h324a36 36 0 0 1 36 36v504a36 36 0 0 1-36 36H48a36 36 0 0 1-36-36V48A36 36 0 0 1 48 12Z"
+          fill="url(#shell-edge)"
+        />
+        <path
+          d="M78 36h264c18.778 0 34 15.222 34 34v460c0 18.778-15.222 34-34 34H78c-18.778 0-34-15.222-34-34V70c0-18.778 15.222-34 34-34Z"
+          fill="url(#shell-glow)"
+          opacity="0.4"
+        />
+      </svg>
+      <div class="calculator" role="application" aria-label="Retro kalkulačka">
+        <div class="branding">
+          <span>Lambda 82</span>
+          <span>solar cell ready</span>
+        </div>
+        <div class="indicator" aria-hidden="true">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+        <div class="display" aria-live="polite">
+          <div class="display-history" id="display-history">&nbsp;</div>
+          <div class="display-value" id="display-value">0</div>
+        </div>
+        <div class="keypad">
+          <button type="button" class="key-function" data-action="clear">AC</button>
+          <button type="button" class="key-function" data-action="sign">±</button>
+          <button type="button" class="key-function" data-action="percent">%</button>
+          <button type="button" class="key-operator" data-op="divide">÷</button>
+
+          <button type="button" class="key-digit" data-digit="7">7</button>
+          <button type="button" class="key-digit" data-digit="8">8</button>
+          <button type="button" class="key-digit" data-digit="9">9</button>
+          <button type="button" class="key-operator" data-op="multiply">×</button>
+
+          <button type="button" class="key-digit" data-digit="4">4</button>
+          <button type="button" class="key-digit" data-digit="5">5</button>
+          <button type="button" class="key-digit" data-digit="6">6</button>
+          <button type="button" class="key-operator" data-op="subtract">−</button>
+
+          <button type="button" class="key-digit" data-digit="1">1</button>
+          <button type="button" class="key-digit" data-digit="2">2</button>
+          <button type="button" class="key-digit" data-digit="3">3</button>
+          <button type="button" class="key-operator" data-op="add">+</button>
+
+          <button type="button" class="key-digit key-zero" data-digit="0">0</button>
+          <button type="button" class="key-digit" data-action="decimal">.</button>
+          <button type="button" class="key-equals" data-action="equals">=</button>
+        </div>
+      </div>
+    </div>
+    <script>
+      const displayValueEl = document.getElementById("display-value");
+      const displayHistoryEl = document.getElementById("display-history");
+      const keypad = document.querySelector(".keypad");
+
+      const state = {
+        current: "0",
+        previous: null,
+        operator: null,
+        overwrite: false,
+      };
+
+      const operators = {
+        add: {
+          symbol: "+",
+          exec: (a, b) => a + b,
+        },
+        subtract: {
+          symbol: "−",
+          exec: (a, b) => a - b,
+        },
+        multiply: {
+          symbol: "×",
+          exec: (a, b) => a * b,
+        },
+        divide: {
+          symbol: "÷",
+          exec: (a, b) => (b === 0 ? NaN : a / b),
+        },
+      };
+
+      function formatNumber(value) {
+        if (!isFinite(value)) {
+          return "ERROR";
+        }
+        const str = value.toString();
+        if (Math.abs(value) >= 1e9 || Math.abs(value) < 1e-6 && value !== 0) {
+          return value.toExponential(6).replace(/\.0+e/, "e");
+        }
+        const [integer, fraction] = str.split(".");
+        const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, "\u2009");
+        return fraction ? `${grouped}.${fraction}` : grouped;
+      }
+
+      function updateDisplay() {
+        displayValueEl.textContent = state.current;
+        if (state.previous !== null && state.operator) {
+          displayHistoryEl.textContent = `${formatNumber(state.previous)} ${operators[state.operator].symbol}`;
+        } else {
+          displayHistoryEl.innerHTML = "&nbsp;";
+        }
+      }
+
+      function inputDigit(digit) {
+        if (state.overwrite) {
+          state.current = digit;
+          state.overwrite = false;
+          updateDisplay();
+          return;
+        }
+        if (state.current === "0") {
+          state.current = digit;
+        } else if (state.current === "-0") {
+          state.current = `-${digit}`;
+        } else {
+          state.current += digit;
+        }
+        updateDisplay();
+      }
+
+      function inputDecimal() {
+        if (state.overwrite) {
+          state.current = "0.";
+          state.overwrite = false;
+          updateDisplay();
+          return;
+        }
+        if (!state.current.includes(".")) {
+          state.current += ".";
+          updateDisplay();
+        }
+      }
+
+      function clearAll() {
+        state.current = "0";
+        state.previous = null;
+        state.operator = null;
+        state.overwrite = false;
+        updateDisplay();
+      }
+
+      function toggleSign() {
+        if (state.current.startsWith("-")) {
+          state.current = state.current.slice(1);
+        } else if (state.current !== "0") {
+          state.current = `-${state.current}`;
+        }
+        updateDisplay();
+      }
+
+      function toPercent() {
+        const value = parseFloat(state.current.replace(/\u2009/g, ""));
+        if (!isNaN(value)) {
+          state.current = formatNumber(value / 100);
+          state.overwrite = true;
+          updateDisplay();
+        }
+      }
+
+      function setOperator(op) {
+        const currentValue = parseFloat(state.current.replace(/\u2009/g, ""));
+        if (state.operator && state.previous !== null && !state.overwrite) {
+          const result = compute(currentValue);
+          state.previous = result;
+          state.current = formatNumber(result);
+        } else {
+          state.previous = currentValue;
+        }
+        state.operator = op;
+        state.overwrite = true;
+        updateDisplay();
+      }
+
+      function compute(nextValue) {
+        const operation = operators[state.operator];
+        if (!operation) return nextValue;
+        const prevValue = state.previous ?? 0;
+        const result = operation.exec(prevValue, nextValue);
+        return result;
+      }
+
+      function evaluate() {
+        if (!state.operator) {
+          return;
+        }
+        const currentValue = parseFloat(state.current.replace(/\u2009/g, ""));
+        const result = compute(currentValue);
+        state.current = formatNumber(result);
+        state.previous = null;
+        state.operator = null;
+        state.overwrite = true;
+        updateDisplay();
+      }
+
+      keypad.addEventListener("click", (event) => {
+        const button = event.target.closest("button");
+        if (!button) return;
+
+        const { digit, action, op } = button.dataset;
+
+        if (digit) {
+          inputDigit(digit);
+          return;
+        }
+
+        switch (action) {
+          case "decimal":
+            inputDecimal();
+            break;
+          case "clear":
+            clearAll();
+            break;
+          case "sign":
+            toggleSign();
+            break;
+          case "percent":
+            toPercent();
+            break;
+          case "equals":
+            evaluate();
+            break;
+          default:
+            break;
+        }
+
+        if (op) {
+          setOperator(op);
+        }
+      });
+
+      updateDisplay();
+    </script>
+  </body>
+</html>
