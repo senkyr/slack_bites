@@ -7,30 +7,34 @@
     <style>
       :root {
         color-scheme: only light;
-        font-size: clamp(14px, 1.05vw + 10px, 18px);
-        --body-bg: radial-gradient(circle at top, #f7ecdf 0%, #f2d4bc 42%, #e3bca0 100%);
-        --shell-highlight: #e7b29c;
-        --shell-base: #c37763;
-        --shell-shadow: #8f4637;
-        --shell-edge: rgba(82, 37, 26, 0.6);
-        --shell-padding: clamp(26px, 6vw, 40px);
-        --screen-bg: linear-gradient(150deg, #fbf4df 0%, #efe2c7 55%, #dfcfb3 100%);
-        --screen-border: #594334;
-        --screen-text: #22170f;
-        --screen-gloss: rgba(255, 255, 255, 0.42);
-        --digit-glow: rgba(35, 24, 18, 0.35);
-        --grid-gap: clamp(12px, 2.6vmin, 20px);
-        --key-radius: clamp(14px, 3vmin, 20px);
-        --key-face: linear-gradient(160deg, #f6ebdc 0%, #e3d0bc 55%, #cdb49d 100%);
-        --key-shadow: #b29881;
-        --key-text: #352118;
-        --function-face: linear-gradient(160deg, #dfcbb6 0%, #c6ae98 52%, #af9783 100%);
-        --function-text: #2f1f17;
-        --operator-face: linear-gradient(160deg, #d7c7b4 0%, #bca894 55%, #a38c79 100%);
-        --operator-text: #2a1b15;
-        --equals-face: linear-gradient(155deg, #c96e58 0%, #ac4f3d 58%, #923f32 100%);
-        --equals-shadow: #703124;
-        --equals-text: #fef3e7;
+        font-size: clamp(13px, 1vw + 9px, 17px);
+        --body-bg: radial-gradient(circle at 45% 10%, #d7cabf 0%, #c7b8a8 55%, #b09f8d 100%);
+        --shell-highlight: #dfdacf;
+        --shell-mid: #b8b2a5;
+        --shell-shadow: #8d8577;
+        --shell-edge: rgba(68, 63, 56, 0.55);
+        --shell-padding: clamp(28px, 5.8vw, 44px);
+        --screen-bg: linear-gradient(160deg, #f6f1dd 0%, #ede5cb 52%, #ded6bc 100%);
+        --screen-border: #514d45;
+        --screen-text: #16140f;
+        --screen-gloss: rgba(255, 255, 255, 0.4);
+        --digit-glow: rgba(22, 20, 15, 0.38);
+        --indicator-off: rgba(62, 59, 52, 0.25);
+        --indicator-on: #c04d31;
+        --grid-gap: clamp(10px, 1.9vmin, 18px);
+        --key-radius: clamp(10px, 2.4vmin, 16px);
+        --key-face: linear-gradient(165deg, #f5efe1 0%, #e9dfcc 50%, #d8ccb7 100%);
+        --key-shadow: #9f9689;
+        --key-text: #2e2b26;
+        --utility-face: linear-gradient(165deg, #e2d8c5 0%, #d5c9b2 55%, #c2b59f 100%);
+        --utility-text: #272521;
+        --operator-face: linear-gradient(165deg, #d7cfbd 0%, #c7bda8 55%, #b5a996 100%);
+        --operator-text: #23211d;
+        --memory-face: linear-gradient(165deg, #cfc7b4 0%, #bfb4a0 60%, #a99d8a 100%);
+        --memory-text: #201e1a;
+        --equals-face: linear-gradient(165deg, #f0b45d 0%, #e79f37 55%, #d8861a 100%);
+        --equals-shadow: #a16415;
+        --equals-text: #2b1c05;
         --font-family-base: "IBM Plex Mono", "Courier New", "Lucida Console", monospace;
       }
 
@@ -52,7 +56,7 @@
 
       .calculator-wrapper {
         position: relative;
-        width: min(440px, 92vw);
+        width: min(480px, 95vw);
       }
 
       .shell-svg {
@@ -61,18 +65,18 @@
         width: 100%;
         height: 100%;
         pointer-events: none;
-        filter: drop-shadow(0 26px 36px rgba(111, 57, 40, 0.35));
+        filter: drop-shadow(0 28px 40px rgba(42, 34, 26, 0.36));
       }
 
       .calculator {
         position: relative;
         padding: var(--shell-padding);
-        border-radius: clamp(34px, 9vmin, 52px);
-        background: linear-gradient(135deg, var(--shell-highlight) 0%, var(--shell-base) 48%, var(--shell-shadow) 100%);
+        border-radius: clamp(34px, 9vmin, 54px);
+        background: linear-gradient(135deg, var(--shell-highlight) 0%, var(--shell-mid) 50%, var(--shell-shadow) 100%);
         border: 1px solid var(--shell-edge);
         display: flex;
         flex-direction: column;
-        gap: clamp(20px, 4.6vmin, 32px);
+        gap: clamp(22px, 4.8vmin, 34px);
         overflow: hidden;
       }
 
@@ -80,8 +84,8 @@
         content: "";
         position: absolute;
         inset: clamp(6px, 1.6vmin, 12px);
-        border-radius: clamp(28px, 8vmin, 42px);
-        background: linear-gradient(140deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+        border-radius: clamp(28px, 8vmin, 44px);
+        background: linear-gradient(140deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
         pointer-events: none;
         mix-blend-mode: screen;
       }
@@ -89,43 +93,72 @@
       .branding {
         position: relative;
         display: flex;
+        align-items: center;
         justify-content: space-between;
-        align-items: baseline;
-        font-size: 0.82rem;
+        gap: 12px;
+        color: rgba(20, 18, 16, 0.78);
+      }
+
+      .brand-title {
+        font-size: clamp(0.88rem, 2.8vw, 1.05rem);
         letter-spacing: 0.28em;
         text-transform: uppercase;
-        color: rgba(56, 30, 20, 0.72);
       }
 
-      .branding span:last-child {
-        font-size: 0.68rem;
-        letter-spacing: 0.34em;
-        color: rgba(56, 30, 20, 0.54);
+      .brand-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: clamp(0.56rem, 1.8vw, 0.68rem);
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: rgba(46, 44, 40, 0.12);
       }
 
-      .indicator {
+      .brand-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--indicator-on);
+        box-shadow: 0 0 4px rgba(192, 77, 49, 0.6);
+      }
+
+      .top-panel {
+        display: flex;
+        flex-direction: column;
+        gap: clamp(12px, 2.4vmin, 18px);
+        padding: clamp(14px, 3.2vmin, 20px);
+        border-radius: clamp(18px, 5vmin, 28px);
+        background: linear-gradient(180deg, #3f3c37 0%, #302d28 60%, #26231f 100%);
+        box-shadow: inset 0 10px 16px rgba(0, 0, 0, 0.45), inset 0 -6px 10px rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(16, 15, 13, 0.4);
+      }
+
+      .solar-strip {
         display: grid;
-        grid-template-columns: repeat(6, 1fr);
+        grid-template-columns: repeat(6, minmax(12px, 1fr));
         gap: clamp(4px, 1vmin, 8px);
-        padding: clamp(6px, 1.6vmin, 10px) clamp(12px, 2.8vmin, 18px);
-        border-radius: clamp(14px, 3.6vmin, 20px);
-        background: linear-gradient(135deg, #4f3b2f 0%, #2d2119 100%);
-        box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.38), inset 0 -2px 4px rgba(255, 255, 255, 0.08);
+        padding: clamp(6px, 1.2vmin, 10px) clamp(10px, 2.1vmin, 16px);
+        border-radius: clamp(12px, 3.2vmin, 18px);
+        background: linear-gradient(120deg, #5c5143 0%, #40392f 58%, #2a251f 100%);
+        box-shadow: inset 0 6px 10px rgba(0, 0, 0, 0.45), inset 0 -4px 6px rgba(255, 255, 255, 0.08);
       }
 
-      .indicator span {
-        border-radius: 6px;
-        background: linear-gradient(180deg, #362821 0%, #1f1712 100%);
-        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.06);
+      .solar-strip span {
+        border-radius: clamp(3px, 0.8vmin, 6px);
+        background: linear-gradient(180deg, #352f28 0%, #1d1915 100%);
+        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.04);
       }
 
       .display {
         position: relative;
-        padding: clamp(26px, 5.4vmin, 34px) clamp(22px, 5vmin, 30px);
-        border-radius: clamp(20px, 4.6vmin, 28px);
+        padding: clamp(24px, 4.8vmin, 32px) clamp(22px, 4.8vmin, 30px);
+        border-radius: clamp(18px, 4.2vmin, 26px);
         background: var(--screen-bg);
         border: 2px solid var(--screen-border);
-        box-shadow: inset 0 12px 18px rgba(71, 52, 40, 0.26), inset 0 -16px 22px rgba(0, 0, 0, 0.2);
+        box-shadow: inset 0 12px 18px rgba(58, 52, 44, 0.28), inset 0 -18px 22px rgba(0, 0, 0, 0.22);
         color: var(--screen-text);
         text-align: right;
         overflow: hidden;
@@ -135,39 +168,71 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(115deg, transparent 20%, var(--screen-gloss) 60%, transparent 92%);
+        background: linear-gradient(115deg, transparent 20%, var(--screen-gloss) 62%, transparent 95%);
         pointer-events: none;
         mix-blend-mode: screen;
       }
 
+      .display-content {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: clamp(10px, 2vw, 18px);
+      }
+
+      .memory-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-size: clamp(0.65rem, 1.8vw, 0.8rem);
+        letter-spacing: 0.32em;
+        text-transform: uppercase;
+        color: rgba(40, 38, 32, 0.8);
+      }
+
+      .memory-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: var(--indicator-off);
+        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
+      }
+
+      .memory-dot.is-on {
+        background: var(--indicator-on);
+        box-shadow: 0 0 8px rgba(192, 77, 49, 0.6);
+      }
+
       .display-value {
         position: relative;
-        font-size: clamp(2.8rem, 9vw, 3.9rem);
+        font-size: clamp(2.6rem, 8.6vw, 3.6rem);
         font-variant-numeric: tabular-nums;
-        letter-spacing: 0.18em;
+        letter-spacing: 0.14em;
         word-break: break-all;
         text-shadow: 0 3px 4px var(--digit-glow);
       }
 
       .keypad {
         display: grid;
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
         gap: var(--grid-gap);
       }
 
       button {
         border: 1px solid rgba(61, 42, 32, 0.28);
         border-radius: var(--key-radius);
-        padding: clamp(16px, 4.2vmin, 22px);
+        padding: clamp(14px, 3.6vmin, 20px);
         background: var(--key-face);
         color: var(--key-text);
         font-family: var(--font-family-base);
-        font-size: clamp(1.05rem, 2.6vmin, 1.25rem);
+        font-size: clamp(0.95rem, 2.4vmin, 1.2rem);
         font-weight: 600;
-        letter-spacing: 0.04em;
+        letter-spacing: 0.02em;
         cursor: pointer;
         transition: transform 0.12s ease, box-shadow 0.14s ease, filter 0.14s ease;
-        box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.65), inset 0 -5px 8px rgba(0, 0, 0, 0.18), 0 6px 0 var(--key-shadow), 0 10px 18px rgba(47, 26, 18, 0.22);
+        box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.6), inset 0 -6px 8px rgba(0, 0, 0, 0.15), 0 6px 0 var(--key-shadow),
+          0 12px 20px rgba(31, 27, 22, 0.18);
         text-transform: none;
       }
 
@@ -182,12 +247,13 @@
 
       button:active {
         transform: translateY(3px);
-        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.55), inset 0 -3px 6px rgba(0, 0, 0, 0.18), 0 3px 0 var(--key-shadow), 0 6px 12px rgba(47, 26, 18, 0.18);
+        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.52), inset 0 -4px 6px rgba(0, 0, 0, 0.18), 0 3px 0 var(--key-shadow),
+          0 8px 12px rgba(31, 27, 22, 0.16);
       }
 
       .key-function {
-        background: var(--function-face);
-        color: var(--function-text);
+        background: var(--utility-face);
+        color: var(--utility-text);
       }
 
       .key-operator {
@@ -195,14 +261,21 @@
         color: var(--operator-text);
       }
 
+      .key-memory {
+        background: var(--memory-face);
+        color: var(--memory-text);
+      }
+
       .key-equals {
         background: var(--equals-face);
         color: var(--equals-text);
-        box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.5), inset 0 -6px 8px rgba(0, 0, 0, 0.22), 0 6px 0 var(--equals-shadow), 0 12px 18px rgba(58, 24, 18, 0.28);
+        box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.5), inset 0 -6px 8px rgba(0, 0, 0, 0.22), 0 6px 0 var(--equals-shadow),
+          0 12px 18px rgba(58, 24, 18, 0.28);
       }
 
       .key-equals:active {
-        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.45), inset 0 -4px 6px rgba(0, 0, 0, 0.22), 0 3px 0 var(--equals-shadow), 0 6px 12px rgba(58, 24, 18, 0.24);
+        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.45), inset 0 -4px 6px rgba(0, 0, 0, 0.22), 0 3px 0 var(--equals-shadow),
+          0 6px 12px rgba(58, 24, 18, 0.24);
       }
 
       .key-zero {
@@ -211,16 +284,16 @@
 
       @media (max-width: 480px) {
         :root {
-          --grid-gap: clamp(10px, 4vw, 14px);
-          --key-radius: clamp(12px, 5vw, 18px);
+          --grid-gap: clamp(8px, 3.6vw, 12px);
+          --key-radius: clamp(12px, 4.8vw, 18px);
         }
 
         .branding {
-          letter-spacing: 0.2em;
+          letter-spacing: 0.22em;
         }
 
         button {
-          font-size: clamp(0.95rem, 4vw, 1.05rem);
+          font-size: clamp(0.9rem, 3.7vw, 1.05rem);
         }
       }
     </style>
@@ -230,77 +303,90 @@
       <svg class="shell-svg" viewBox="0 0 420 600" aria-hidden="true">
         <defs>
           <linearGradient id="shell-edge" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#f4c7b0" />
-            <stop offset="55%" stop-color="#c37763" />
-            <stop offset="100%" stop-color="#874335" />
+            <stop offset="0%" stop-color="#ece8e0" />
+            <stop offset="55%" stop-color="#b8b2a5" />
+            <stop offset="100%" stop-color="#726a5e" />
           </linearGradient>
           <linearGradient id="shell-glow" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="rgba(255, 248, 240, 0.42)" />
+            <stop offset="0%" stop-color="rgba(255, 255, 255, 0.38)" />
             <stop offset="45%" stop-color="rgba(255, 255, 255, 0)" />
           </linearGradient>
         </defs>
+        <path d="M40 10h340a40 40 0 0 1 40 40v520a40 40 0 0 1-40 40H40a40 40 0 0 1-40-40V50A40 40 0 0 1 40 10Z" fill="url(#shell-edge)" />
         <path
-          d="M48 12h324a36 36 0 0 1 36 36v504a36 36 0 0 1-36 36H48a36 36 0 0 1-36-36V48A36 36 0 0 1 48 12Z"
-          fill="url(#shell-edge)"
-        />
-        <path
-          d="M78 36h264c18.778 0 34 15.222 34 34v460c0 18.778-15.222 34-34 34H78c-18.778 0-34-15.222-34-34V70c0-18.778 15.222-34 34-34Z"
+          d="M72 34h276c19.33 0 35 15.67 35 35v468c0 19.33-15.67 35-35 35H72c-19.33 0-35-15.67-35-35V69c0-19.33 15.67-35 35-35Z"
           fill="url(#shell-glow)"
           opacity="0.5"
         />
       </svg>
       <div class="calculator" role="application" aria-label="Retro kalkulačka">
         <div class="branding">
-          <span>Lambda 82</span>
-          <span>solar cell ready</span>
+          <span class="brand-title">Elektronika B3-18</span>
+          <span class="brand-badge"><span class="brand-dot"></span> solid state</span>
         </div>
-        <div class="indicator" aria-hidden="true">
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-          <span></span>
-        </div>
-        <div class="display" aria-live="polite">
-          <div class="display-value" id="display-value">0</div>
+        <div class="top-panel">
+          <div class="solar-strip" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+          <div class="display" aria-live="polite">
+            <div class="display-content">
+              <div class="memory-indicator">
+                <span class="memory-dot" id="memory-indicator"></span>
+                <span>M</span>
+              </div>
+              <div class="display-value" id="display-value">0</div>
+            </div>
+          </div>
         </div>
         <div class="keypad">
           <button type="button" class="key-function" data-action="clear">AC</button>
-          <button type="button" class="key-function" data-action="sign">±</button>
+          <button type="button" class="key-function" data-action="clear-entry">CE</button>
           <button type="button" class="key-function" data-action="percent">%</button>
+          <button type="button" class="key-function" data-action="sign">±</button>
           <button type="button" class="key-operator" data-op="divide">÷</button>
 
           <button type="button" class="key-digit" data-digit="7">7</button>
           <button type="button" class="key-digit" data-digit="8">8</button>
           <button type="button" class="key-digit" data-digit="9">9</button>
           <button type="button" class="key-operator" data-op="multiply">×</button>
+          <button type="button" class="key-memory" data-action="memory-add">M+</button>
 
           <button type="button" class="key-digit" data-digit="4">4</button>
           <button type="button" class="key-digit" data-digit="5">5</button>
           <button type="button" class="key-digit" data-digit="6">6</button>
           <button type="button" class="key-operator" data-op="subtract">−</button>
+          <button type="button" class="key-memory" data-action="memory-subtract">M−</button>
 
           <button type="button" class="key-digit" data-digit="1">1</button>
           <button type="button" class="key-digit" data-digit="2">2</button>
           <button type="button" class="key-digit" data-digit="3">3</button>
           <button type="button" class="key-operator" data-op="add">+</button>
+          <button type="button" class="key-memory" data-action="memory-recall">MR</button>
 
           <button type="button" class="key-digit key-zero" data-digit="0">0</button>
+          <button type="button" class="key-function" data-action="double-zero">00</button>
           <button type="button" class="key-digit" data-action="decimal">.</button>
           <button type="button" class="key-equals" data-action="equals">=</button>
+          <button type="button" class="key-memory" data-action="memory-clear">MC</button>
         </div>
       </div>
     </div>
     <script>
       const displayValueEl = document.getElementById("display-value");
       const keypad = document.querySelector(".keypad");
+      const memoryIndicator = document.getElementById("memory-indicator");
 
       const state = {
         current: "0",
         previous: null,
         operator: null,
         overwrite: false,
+        memory: 0,
       };
 
       const operators = {
@@ -327,7 +413,7 @@
           return "ERROR";
         }
         const str = value.toString();
-        if (Math.abs(value) >= 1e9 || Math.abs(value) < 1e-6 && value !== 0) {
+        if (Math.abs(value) >= 1e9 || (Math.abs(value) < 1e-6 && value !== 0)) {
           return value.toExponential(6).replace(/\.0+e/, "e");
         }
         const [integer, fraction] = str.split(".");
@@ -337,6 +423,12 @@
 
       function updateDisplay() {
         displayValueEl.textContent = state.current;
+      }
+
+      function updateMemoryIndicator() {
+        if (!memoryIndicator) return;
+        const hasMemory = Math.abs(state.memory) > 1e-12;
+        memoryIndicator.classList.toggle("is-on", hasMemory);
       }
 
       function inputDigit(digit) {
@@ -353,6 +445,17 @@
         } else {
           state.current += digit;
         }
+        updateDisplay();
+      }
+
+      function inputDoubleZero() {
+        if (state.overwrite) {
+          state.current = "0";
+          state.overwrite = false;
+          updateDisplay();
+          return;
+        }
+        state.current = state.current === "0" ? "0" : `${state.current}00`;
         updateDisplay();
       }
 
@@ -377,6 +480,12 @@
         updateDisplay();
       }
 
+      function clearEntry() {
+        state.current = "0";
+        state.overwrite = false;
+        updateDisplay();
+      }
+
       function toggleSign() {
         if (state.current.startsWith("-")) {
           state.current = state.current.slice(1);
@@ -395,34 +504,57 @@
         }
       }
 
+      function memoryAdd() {
+        const value = parseFloat(state.current.replace(/\u2009/g, ""));
+        if (!isNaN(value)) {
+          state.memory += value;
+          state.overwrite = true;
+          updateMemoryIndicator();
+        }
+      }
+
+      function memorySubtract() {
+        const value = parseFloat(state.current.replace(/\u2009/g, ""));
+        if (!isNaN(value)) {
+          state.memory -= value;
+          state.overwrite = true;
+          updateMemoryIndicator();
+        }
+      }
+
+      function memoryRecall() {
+        state.current = formatNumber(state.memory);
+        state.overwrite = true;
+        updateDisplay();
+      }
+
+      function memoryClear() {
+        state.memory = 0;
+        updateMemoryIndicator();
+      }
+
       function setOperator(op) {
         const currentValue = parseFloat(state.current.replace(/\u2009/g, ""));
         if (state.operator && state.previous !== null && !state.overwrite) {
-          const result = compute(currentValue);
-          state.previous = result;
+          const operatorInfo = operators[state.operator];
+          const result = operatorInfo.exec(state.previous, currentValue);
           state.current = formatNumber(result);
+          state.previous = result;
+          updateDisplay();
         } else {
           state.previous = currentValue;
         }
         state.operator = op;
         state.overwrite = true;
-        updateDisplay();
-      }
-
-      function compute(nextValue) {
-        const operation = operators[state.operator];
-        if (!operation) return nextValue;
-        const prevValue = state.previous ?? 0;
-        const result = operation.exec(prevValue, nextValue);
-        return result;
       }
 
       function evaluate() {
-        if (!state.operator) {
+        if (!state.operator || state.previous === null) {
           return;
         }
         const currentValue = parseFloat(state.current.replace(/\u2009/g, ""));
-        const result = compute(currentValue);
+        const operatorInfo = operators[state.operator];
+        const result = operatorInfo.exec(state.previous, currentValue);
         state.current = formatNumber(result);
         state.previous = null;
         state.operator = null;
@@ -431,22 +563,29 @@
       }
 
       keypad.addEventListener("click", (event) => {
-        const button = event.target.closest("button");
-        if (!button) return;
+        const target = event.target;
+        if (!(target instanceof HTMLButtonElement)) return;
 
-        const { digit, action, op } = button.dataset;
+        const digit = target.dataset.digit;
+        const op = target.dataset.op;
+        const action = target.dataset.action;
 
         if (digit) {
           inputDigit(digit);
           return;
         }
 
+        if (op) {
+          setOperator(op);
+          return;
+        }
+
         switch (action) {
-          case "decimal":
-            inputDecimal();
-            break;
           case "clear":
             clearAll();
+            break;
+          case "clear-entry":
+            clearEntry();
             break;
           case "sign":
             toggleSign();
@@ -454,18 +593,33 @@
           case "percent":
             toPercent();
             break;
+          case "decimal":
+            inputDecimal();
+            break;
+          case "double-zero":
+            inputDoubleZero();
+            break;
           case "equals":
             evaluate();
+            break;
+          case "memory-add":
+            memoryAdd();
+            break;
+          case "memory-subtract":
+            memorySubtract();
+            break;
+          case "memory-recall":
+            memoryRecall();
+            break;
+          case "memory-clear":
+            memoryClear();
             break;
           default:
             break;
         }
-
-        if (op) {
-          setOperator(op);
-        }
       });
 
+      updateMemoryIndicator();
       updateDisplay();
     </script>
   </body>
