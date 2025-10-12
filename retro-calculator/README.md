@@ -1,13 +1,15 @@
-# Retro kalkulačka
+# Retro kalkulačka – MR 610
 
-Webová aplikace kalkulačky s retro nádechem podle zadání ze Slacku. Uživatelské rozhraní je celé v HTML a CSS se zaměřením na vektorový vzhled.
+Věrná digitální reprezentace kalkulačky z fotografie (MR 610). Cíl je co nejvěrněji napodobit vzhled: černé šasi, okénko LCD, stříbrná čelní plocha, posuvné přepínače a barevně odlišené klávesy v rozložení 5×8. Funkčně je implementována základní aritmetika; pokročilé vědecké funkce jsou pouze vizuální.
 
 ## Rychlý start
-- Otevři `index.html` v libovolném moderním prohlížeči.
+- Otevři `index.html` v moderním prohlížeči.
 
 ## Závislosti
-- Žádné – stačí moderní prohlížeč.
+- Žádné; čisté HTML/CSS/JS.
 
 ## Poznámky
-- Tlačítka `AC`, `±`, `%`, základní aritmetika, desetinná tečka a `=` by měla odpovídat očekávané funkci.
-- Rozhraní je navrženo responsivně; na užších displejích se kalkulačka škáluje pomocí CSS proměnných.
+- Přepínač OFF/ON ovlivňuje jen zobrazení LCD. Přepínač DEG/RAD/GRD je vizuální.
+- Klávesy MC/MR/M± jsou vizuální; výpočet podporuje číslice, `+ − × ÷`, `=`, `C`, `CE`, `+/−`, desetinnou čárku.
+- Rozložení a barvy odpovídají fotce `reference.png`; cílem je věrný vzhled, nikoli přesná emulace funkcí.
+

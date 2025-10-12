@@ -3,624 +3,343 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Retro kalkulačka</title>
+    <title>MR 610 – věrná replika</title>
     <style>
       :root {
         color-scheme: only light;
-        font-size: clamp(13px, 1vw + 9px, 17px);
-        --body-bg: radial-gradient(circle at 45% 10%, #d7cabf 0%, #c7b8a8 55%, #b09f8d 100%);
-        --shell-highlight: #dfdacf;
-        --shell-mid: #b8b2a5;
-        --shell-shadow: #8d8577;
-        --shell-edge: rgba(68, 63, 56, 0.55);
-        --shell-padding: clamp(28px, 5.8vw, 44px);
-        --screen-bg: linear-gradient(160deg, #f6f1dd 0%, #ede5cb 52%, #ded6bc 100%);
-        --screen-border: #514d45;
-        --screen-text: #16140f;
-        --screen-gloss: rgba(255, 255, 255, 0.4);
-        --digit-glow: rgba(22, 20, 15, 0.38);
-        --indicator-off: rgba(62, 59, 52, 0.25);
-        --indicator-on: #c04d31;
-        --grid-gap: clamp(10px, 1.9vmin, 18px);
-        --key-radius: clamp(10px, 2.4vmin, 16px);
-        --key-face: linear-gradient(165deg, #f5efe1 0%, #e9dfcc 50%, #d8ccb7 100%);
-        --key-shadow: #9f9689;
-        --key-text: #2e2b26;
-        --utility-face: linear-gradient(165deg, #e2d8c5 0%, #d5c9b2 55%, #c2b59f 100%);
-        --utility-text: #272521;
-        --operator-face: linear-gradient(165deg, #d7cfbd 0%, #c7bda8 55%, #b5a996 100%);
-        --operator-text: #23211d;
-        --memory-face: linear-gradient(165deg, #cfc7b4 0%, #bfb4a0 60%, #a99d8a 100%);
-        --memory-text: #201e1a;
-        --equals-face: linear-gradient(165deg, #f0b45d 0%, #e79f37 55%, #d8861a 100%);
-        --equals-shadow: #a16415;
-        --equals-text: #2b1c05;
-        --font-family-base: "IBM Plex Mono", "Courier New", "Lucida Console", monospace;
+        --bg: #b55c58;
+        --case: #151515;
+        --face: #dedede;
+        --face-edge: #bdbdbd;
+        --bezel: #0f0f0f;
+        --lcd-bg: #dfe8d8;
+        --lcd-txt: #2b2b2b;
+        --blue-key: #1f3960;
+        --blue-key-txt: #e9f1ff;
+        --black-key: #1c1c1c;
+        --black-key-txt: #ffffff;
+        --beige-key: #e6dfcf;
+        --beige-key-txt: #2c2c2c;
+        --red-key: #b0312d;
+        --red-key-txt: #fff4f4;
+        --grid-gap: 8px;
+        --radius: 10px;
+        font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", Cantarell, "DejaVu Sans", sans-serif;
       }
 
-      * {
-        box-sizing: border-box;
-      }
+      * { box-sizing: border-box; }
 
       body {
         margin: 0;
         min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: var(--body-bg);
-        font-family: var(--font-family-base);
-        color: #33231b;
-        padding: clamp(30px, 6vh, 80px) clamp(16px, 5vw, 48px);
-      }
-
-      .calculator-wrapper {
-        position: relative;
-        width: min(480px, 95vw);
-      }
-
-      .shell-svg {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        pointer-events: none;
-        filter: drop-shadow(0 28px 40px rgba(42, 34, 26, 0.36));
-      }
-
-      .calculator {
-        position: relative;
-        padding: var(--shell-padding);
-        border-radius: clamp(34px, 9vmin, 54px);
-        background: linear-gradient(135deg, var(--shell-highlight) 0%, var(--shell-mid) 50%, var(--shell-shadow) 100%);
-        border: 1px solid var(--shell-edge);
-        display: flex;
-        flex-direction: column;
-        gap: clamp(22px, 4.8vmin, 34px);
-        overflow: hidden;
-      }
-
-      .calculator::before {
-        content: "";
-        position: absolute;
-        inset: clamp(6px, 1.6vmin, 12px);
-        border-radius: clamp(28px, 8vmin, 44px);
-        background: linear-gradient(140deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0) 55%);
-        pointer-events: none;
-        mix-blend-mode: screen;
-      }
-
-      .branding {
-        position: relative;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 12px;
-        color: rgba(20, 18, 16, 0.78);
-      }
-
-      .brand-title {
-        font-size: clamp(0.88rem, 2.8vw, 1.05rem);
-        letter-spacing: 0.28em;
-        text-transform: uppercase;
-      }
-
-      .brand-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: clamp(0.56rem, 1.8vw, 0.68rem);
-        letter-spacing: 0.32em;
-        text-transform: uppercase;
-        padding: 6px 12px;
-        border-radius: 999px;
-        background: rgba(46, 44, 40, 0.12);
-      }
-
-      .brand-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--indicator-on);
-        box-shadow: 0 0 4px rgba(192, 77, 49, 0.6);
-      }
-
-      .top-panel {
-        display: flex;
-        flex-direction: column;
-        gap: clamp(12px, 2.4vmin, 18px);
-        padding: clamp(14px, 3.2vmin, 20px);
-        border-radius: clamp(18px, 5vmin, 28px);
-        background: linear-gradient(180deg, #3f3c37 0%, #302d28 60%, #26231f 100%);
-        box-shadow: inset 0 10px 16px rgba(0, 0, 0, 0.45), inset 0 -6px 10px rgba(255, 255, 255, 0.06);
-        border: 1px solid rgba(16, 15, 13, 0.4);
-      }
-
-      .solar-strip {
         display: grid;
-        grid-template-columns: repeat(6, minmax(12px, 1fr));
-        gap: clamp(4px, 1vmin, 8px);
-        padding: clamp(6px, 1.2vmin, 10px) clamp(10px, 2.1vmin, 16px);
-        border-radius: clamp(12px, 3.2vmin, 18px);
-        background: linear-gradient(120deg, #5c5143 0%, #40392f 58%, #2a251f 100%);
-        box-shadow: inset 0 6px 10px rgba(0, 0, 0, 0.45), inset 0 -4px 6px rgba(255, 255, 255, 0.08);
+        place-items: center;
+        background: radial-gradient(1000px 800px at 50% 20%, #c67872, var(--bg));
+        padding: 24px;
       }
 
-      .solar-strip span {
-        border-radius: clamp(3px, 0.8vmin, 6px);
-        background: linear-gradient(180deg, #352f28 0%, #1d1915 100%);
-        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.04);
+      .device {
+        width: min(480px, 95vw);
+        background: linear-gradient(#1b1b1b, var(--case));
+        border-radius: 22px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.45);
+        padding: 18px 18px 22px;
+        color: #111;
       }
 
-      .display {
-        position: relative;
-        padding: clamp(24px, 4.8vmin, 32px) clamp(22px, 4.8vmin, 30px);
-        border-radius: clamp(18px, 4.2vmin, 26px);
-        background: var(--screen-bg);
-        border: 2px solid var(--screen-border);
-        box-shadow: inset 0 12px 18px rgba(58, 52, 44, 0.28), inset 0 -18px 22px rgba(0, 0, 0, 0.22);
-        color: var(--screen-text);
-        text-align: right;
-        overflow: hidden;
+      .window {
+        background: var(--bezel);
+        border-radius: 10px;
+        padding: 10px 12px;
+        box-shadow: inset 0 0 0 2px #2a2a2a, inset 0 -3px 8px rgba(0,0,0,.6);
+        margin-bottom: 10px;
       }
 
-      .display::after {
-        content: "";
-        position: absolute;
-        inset: 0;
-        background: linear-gradient(115deg, transparent 20%, var(--screen-gloss) 62%, transparent 95%);
-        pointer-events: none;
-        mix-blend-mode: screen;
-      }
-
-      .display-content {
-        position: relative;
+      .lcd {
+        background: var(--lcd-bg);
+        color: var(--lcd-txt);
+        border-radius: 6px;
+        height: 48px;
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: clamp(10px, 2vw, 18px);
-      }
-
-      .memory-indicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        font-size: clamp(0.65rem, 1.8vw, 0.8rem);
-        letter-spacing: 0.32em;
-        text-transform: uppercase;
-        color: rgba(40, 38, 32, 0.8);
-      }
-
-      .memory-dot {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        background: var(--indicator-off);
-        box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.4);
-      }
-
-      .memory-dot.is-on {
-        background: var(--indicator-on);
-        box-shadow: 0 0 8px rgba(192, 77, 49, 0.6);
-      }
-
-      .display-value {
-        position: relative;
-        font-size: clamp(2.6rem, 8.6vw, 3.6rem);
+        justify-content: flex-end;
+        padding: 0 14px;
+        font-size: 34px;
         font-variant-numeric: tabular-nums;
-        letter-spacing: 0.14em;
-        word-break: break-all;
-        text-shadow: 0 3px 4px var(--digit-glow);
+        box-shadow: inset 0 2px 0 rgba(255,255,255,.7), inset 0 -2px 0 rgba(0,0,0,.2);
       }
 
-      .keypad {
+      .panel {
+        background: linear-gradient(#efefef, #dfdfdf);
+        border-radius: 8px 8px 16px 16px;
+        box-shadow: inset 0 0 0 1px var(--face-edge);
+        padding: 12px 14px 22px;
+      }
+
+      .switch-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        align-items: center;
+        margin-bottom: 8px;
+        color: #111;
+        font-size: 12px;
+        letter-spacing: .08em;
+      }
+      .switch {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 8px;
+        align-items: center;
+      }
+      .slot {
+        position: relative;
+        background: #cfcfcf;
+        border: 1px solid #888;
+        border-radius: 4px;
+        height: 22px;
+      }
+      .knob {
+        position: absolute;
+        top: 1px; bottom: 1px;
+        width: 26px;
+        background: #151515;
+        border-radius: 3px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,.12);
+        transition: left .15s ease;
+      }
+      .slot[data-pos="off"] .knob { left: 1px; }
+      .slot[data-pos="on"] .knob { left: calc(100% - 27px); }
+      .slot[data-pos="0"] .knob { left: 1px; }
+      .slot[data-pos="1"] .knob { left: calc(50% - 13px); }
+      .slot[data-pos="2"] .knob { left: calc(100% - 27px); }
+
+      .grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
         gap: var(--grid-gap);
+        margin-top: 8px;
       }
 
-      button {
-        border: 1px solid rgba(61, 42, 32, 0.28);
-        border-radius: var(--key-radius);
-        padding: clamp(14px, 3.6vmin, 20px);
-        background: var(--key-face);
-        color: var(--key-text);
-        font-family: var(--font-family-base);
-        font-size: clamp(0.95rem, 2.4vmin, 1.2rem);
-        font-weight: 600;
-        letter-spacing: 0.02em;
-        cursor: pointer;
-        transition: transform 0.12s ease, box-shadow 0.14s ease, filter 0.14s ease;
-        box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.6), inset 0 -6px 8px rgba(0, 0, 0, 0.15), 0 6px 0 var(--key-shadow),
-          0 12px 20px rgba(31, 27, 22, 0.18);
-        text-transform: none;
+      .key {
+        border-radius: var(--radius);
+        padding: 8px;
+        border: 1px solid rgba(0,0,0,.35);
+        box-shadow: 0 2px 0 rgba(0,0,0,.45);
+        height: 48px;
+        display: grid;
+        align-content: center;
+        justify-items: center;
+        text-align: center;
+        cursor: default;
+        user-select: none;
       }
+      button.key { cursor: pointer; }
+      .key:active { transform: translateY(1px); box-shadow: 0 1px 0 rgba(0,0,0,.45); }
 
-      button:hover {
-        filter: brightness(1.05);
+      .key--blue { background: var(--blue-key); color: var(--blue-key-txt); }
+      .key--black { background: var(--black-key); color: var(--black-key-txt); }
+      .key--beige { background: var(--beige-key); color: var(--beige-key-txt); }
+      .key--red { background: var(--red-key); color: var(--red-key-txt); }
+
+      .kstack { line-height: 1; }
+      .kstack .secondary { font-size: 10px; opacity: .9; letter-spacing: .02em; }
+      .kstack .primary { font-size: 14px; margin-top: 2px; font-weight: 600; }
+
+      .foot {
+        display: flex; justify-content: flex-end; margin-top: 14px; color: #121212;
+        font-weight: 700; letter-spacing: .08em; font-size: 26px;
       }
-
-      button:focus-visible {
-        outline: 3px solid rgba(255, 249, 236, 0.5);
-        outline-offset: 3px;
-      }
-
-      button:active {
-        transform: translateY(3px);
-        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.52), inset 0 -4px 6px rgba(0, 0, 0, 0.18), 0 3px 0 var(--key-shadow),
-          0 8px 12px rgba(31, 27, 22, 0.16);
-      }
-
-      .key-function {
-        background: var(--utility-face);
-        color: var(--utility-text);
-      }
-
-      .key-operator {
-        background: var(--operator-face);
-        color: var(--operator-text);
-      }
-
-      .key-memory {
-        background: var(--memory-face);
-        color: var(--memory-text);
-      }
-
-      .key-equals {
-        background: var(--equals-face);
-        color: var(--equals-text);
-        box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.5), inset 0 -6px 8px rgba(0, 0, 0, 0.22), 0 6px 0 var(--equals-shadow),
-          0 12px 18px rgba(58, 24, 18, 0.28);
-      }
-
-      .key-equals:active {
-        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.45), inset 0 -4px 6px rgba(0, 0, 0, 0.22), 0 3px 0 var(--equals-shadow),
-          0 6px 12px rgba(58, 24, 18, 0.24);
-      }
-
-      .key-zero {
-        grid-column: span 2;
-      }
-
-      @media (max-width: 480px) {
-        :root {
-          --grid-gap: clamp(8px, 3.6vw, 12px);
-          --key-radius: clamp(12px, 4.8vw, 18px);
-        }
-
-        .branding {
-          letter-spacing: 0.22em;
-        }
-
-        button {
-          font-size: clamp(0.9rem, 3.7vw, 1.05rem);
-        }
-      }
+      .foot span { color: #1a1a1a; text-shadow: 0 1px 0 #fff; }
     </style>
   </head>
   <body>
-    <div class="calculator-wrapper">
-      <svg class="shell-svg" viewBox="0 0 420 600" aria-hidden="true">
-        <defs>
-          <linearGradient id="shell-edge" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#ece8e0" />
-            <stop offset="55%" stop-color="#b8b2a5" />
-            <stop offset="100%" stop-color="#726a5e" />
-          </linearGradient>
-          <linearGradient id="shell-glow" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="rgba(255, 255, 255, 0.38)" />
-            <stop offset="45%" stop-color="rgba(255, 255, 255, 0)" />
-          </linearGradient>
-        </defs>
-        <path d="M40 10h340a40 40 0 0 1 40 40v520a40 40 0 0 1-40 40H40a40 40 0 0 1-40-40V50A40 40 0 0 1 40 10Z" fill="url(#shell-edge)" />
-        <path
-          d="M72 34h276c19.33 0 35 15.67 35 35v468c0 19.33-15.67 35-35 35H72c-19.33 0-35-15.67-35-35V69c0-19.33 15.67-35 35-35Z"
-          fill="url(#shell-glow)"
-          opacity="0.5"
-        />
-      </svg>
-      <div class="calculator" role="application" aria-label="Retro kalkulačka">
-        <div class="branding">
-          <span class="brand-title">Elektronika B3-18</span>
-          <span class="brand-badge"><span class="brand-dot"></span> solid state</span>
-        </div>
-        <div class="top-panel">
-          <div class="solar-strip" aria-hidden="true">
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
+    <div class="device" role="application" aria-label="MR 610 kalkulačka">
+      <div class="window">
+        <div class="lcd" id="lcd">0.</div>
+      </div>
+
+      <div class="panel">
+        <div class="switch-row">
+          <div class="switch">
+            <div>OFF&nbsp;&nbsp;ON</div>
+            <div class="slot" id="sw-power" data-pos="on" aria-label="Power switch" role="switch" aria-checked="true">
+              <div class="knob"></div>
+            </div>
           </div>
-          <div class="display" aria-live="polite">
-            <div class="display-content">
-              <div class="memory-indicator">
-                <span class="memory-dot" id="memory-indicator"></span>
-                <span>M</span>
-              </div>
-              <div class="display-value" id="display-value">0</div>
+          <div class="switch">
+            <div>DEG&nbsp;RAD&nbsp;GRD</div>
+            <div class="slot" id="sw-angle" data-pos="0" aria-label="Angle unit switch">
+              <div class="knob"></div>
             </div>
           </div>
         </div>
-        <div class="keypad">
-          <button type="button" class="key-function" data-action="clear">AC</button>
-          <button type="button" class="key-function" data-action="clear-entry">CE</button>
-          <button type="button" class="key-function" data-action="percent">%</button>
-          <button type="button" class="key-function" data-action="sign">±</button>
-          <button type="button" class="key-operator" data-op="divide">÷</button>
 
-          <button type="button" class="key-digit" data-digit="7">7</button>
-          <button type="button" class="key-digit" data-digit="8">8</button>
-          <button type="button" class="key-digit" data-digit="9">9</button>
-          <button type="button" class="key-operator" data-op="multiply">×</button>
-          <button type="button" class="key-memory" data-action="memory-add">M+</button>
+        <div class="grid" id="grid">
+          <!-- řada 1 -->
+          <div class="key key--blue"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">F</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">3√</div><div class="primary">yˣ</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">Δ%</div><div class="primary">1/x</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">[</div><div class="primary">(</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">]</div><div class="primary">)</div></div></div>
 
-          <button type="button" class="key-digit" data-digit="4">4</button>
-          <button type="button" class="key-digit" data-digit="5">5</button>
-          <button type="button" class="key-digit" data-digit="6">6</button>
-          <button type="button" class="key-operator" data-op="subtract">−</button>
-          <button type="button" class="key-memory" data-action="memory-subtract">M−</button>
+          <!-- řada 2 -->
+          <div class="key key--blue"><div class="kstack"><div class="secondary">HYP</div><div class="primary">hyp</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">arcsin</div><div class="primary">sin</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">arccos</div><div class="primary">cos</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">arctan</div><div class="primary">tan</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">X!</div><div class="primary">X↔Y</div></div></div>
 
-          <button type="button" class="key-digit" data-digit="1">1</button>
-          <button type="button" class="key-digit" data-digit="2">2</button>
-          <button type="button" class="key-digit" data-digit="3">3</button>
-          <button type="button" class="key-operator" data-op="add">+</button>
-          <button type="button" class="key-memory" data-action="memory-recall">MR</button>
+          <!-- řada 3 -->
+          <div class="key key--blue"><div class="kstack"><div class="secondary">lg</div><div class="primary">ln</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">10ˣ</div><div class="primary">eˣ</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">√</div><div class="primary">x²</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">DMS</div><div class="primary">DEG</div></div></div>
+          <div class="key key--blue"><div class="kstack"><div class="secondary">→XY</div><div class="primary">→rα</div></div></div>
 
-          <button type="button" class="key-digit key-zero" data-digit="0">0</button>
-          <button type="button" class="key-function" data-action="double-zero">00</button>
-          <button type="button" class="key-digit" data-action="decimal">.</button>
-          <button type="button" class="key-equals" data-action="equals">=</button>
-          <button type="button" class="key-memory" data-action="memory-clear">MC</button>
+        <!-- řada 4 – paměť (červené) -->
+          <button class="key key--red" data-action="mem-sub"><div class="kstack"><div class="secondary">δset</div><div class="primary">X-M</div></div></button>
+          <button class="key key--red" data-action="mem-clear"><div class="kstack"><div class="secondary">n(ΣX)</div><div class="primary">MC</div></div></button>
+          <button class="key key--red" data-action="mem-recall"><div class="kstack"><div class="secondary">δn-1(δn)</div><div class="primary">MR</div></div></button>
+          <button class="key key--red" data-action="mem-sub"><div class="kstack"><div class="secondary">x̄(Σx²)</div><div class="primary">X-M</div></div></button>
+          <button class="key key--red" data-action="mem-add"><div class="kstack"><div class="secondary">DATA(DEL)</div><div class="primary">M+</div></div></button>
+
+          <!-- řada 5 7–9 a minus -->
+          <div class="key key--beige"><div class="kstack"><div class="secondary">π</div><div class="primary">EEX</div></div></div>
+          <button class="key key--black" data-digit="7"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">7</div></div></button>
+          <button class="key key--black" data-digit="8"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">8</div></div></button>
+          <button class="key key--black" data-digit="9"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">9</div></div></button>
+          <button class="key key--beige" data-op="-"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">−</div></div></button>
+
+          <!-- řada 6 4–6 a dělení -->
+          <button class="key key--beige" data-action="sign"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">+/−</div></div></button>
+          <button class="key key--black" data-digit="4"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">4</div></div></button>
+          <button class="key key--black" data-digit="5"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">5</div></div></button>
+          <button class="key key--black" data-digit="6"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">6</div></div></button>
+          <button class="key key--beige" data-op="/"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">÷</div></div></button>
+
+          <!-- řada 7 1–3 a násobení -->
+          <button class="key key--beige" data-action="clear"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">C</div></div></button>
+          <button class="key key--black" data-digit="1"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">1</div></div></button>
+          <button class="key key--black" data-digit="2"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">2</div></div></button>
+          <button class="key key--black" data-digit="3"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">3</div></div></button>
+          <button class="key key--beige" data-op="*"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">×</div></div></button>
+
+          <!-- řada 8 0 , = a plus -->
+          <button class="key key--beige" data-action="clear-entry"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">CE</div></div></button>
+          <button class="key key--black" data-digit="0"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">0</div></div></button>
+          <button class="key key--black" data-action="decimal"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">,</div></div></button>
+          <button class="key key--beige" data-action="equals"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">=</div></div></button>
+          <button class="key key--beige" data-op="+"><div class="kstack"><div class="secondary">&nbsp;</div><div class="primary">+</div></div></button>
         </div>
+
+        <div class="foot"><span>MR 610</span></div>
       </div>
     </div>
+
     <script>
-      const displayValueEl = document.getElementById("display-value");
-      const keypad = document.querySelector(".keypad");
-      const memoryIndicator = document.getElementById("memory-indicator");
+      const lcd = document.getElementById('lcd');
+      const grid = document.getElementById('grid');
+      const swPower = document.getElementById('sw-power');
+      const swAngle = document.getElementById('sw-angle');
 
       const state = {
-        current: "0",
-        previous: null,
-        operator: null,
-        overwrite: false,
-        memory: 0,
+        on: true,
+        current: '0',
+        prev: null,
+        op: null,
+        overwrite: true,
       };
 
-      const operators = {
-        add: {
-          symbol: "+",
-          exec: (a, b) => a + b,
-        },
-        subtract: {
-          symbol: "−",
-          exec: (a, b) => a - b,
-        },
-        multiply: {
-          symbol: "×",
-          exec: (a, b) => a * b,
-        },
-        divide: {
-          symbol: "÷",
-          exec: (a, b) => (b === 0 ? NaN : a / b),
-        },
-      };
-
-      function formatNumber(value) {
-        if (!isFinite(value)) {
-          return "ERROR";
-        }
-        const str = value.toString();
-        if (Math.abs(value) >= 1e9 || (Math.abs(value) < 1e-6 && value !== 0)) {
-          return value.toExponential(6).replace(/\.0+e/, "e");
-        }
-        const [integer, fraction] = str.split(".");
-        const grouped = integer.replace(/\B(?=(\d{3})+(?!\d))/g, "\u2009");
-        return fraction ? `${grouped}.${fraction}` : grouped;
+      function render() {
+        lcd.textContent = state.on ? (state.current.replace('.', ',') + (state.current.includes('.') ? '' : '.')) : '';
+        lcd.style.opacity = state.on ? '1' : '0.15';
       }
 
-      function updateDisplay() {
-        displayValueEl.textContent = state.current;
-      }
-
-      function updateMemoryIndicator() {
-        if (!memoryIndicator) return;
-        const hasMemory = Math.abs(state.memory) > 1e-12;
-        memoryIndicator.classList.toggle("is-on", hasMemory);
-      }
-
-      function inputDigit(digit) {
-        if (state.overwrite) {
-          state.current = digit;
+      function inputDigit(d) {
+        if (!state.on) return;
+        if (state.overwrite || state.current === '0') {
+          state.current = d;
           state.overwrite = false;
-          updateDisplay();
-          return;
-        }
-        if (state.current === "0") {
-          state.current = digit;
-        } else if (state.current === "-0") {
-          state.current = `-${digit}`;
         } else {
-          state.current += digit;
+          state.current += d;
         }
-        updateDisplay();
+        render();
       }
-
-      function inputDoubleZero() {
-        if (state.overwrite) {
-          state.current = "0";
-          state.overwrite = false;
-          updateDisplay();
-          return;
-        }
-        state.current = state.current === "0" ? "0" : `${state.current}00`;
-        updateDisplay();
-      }
-
       function inputDecimal() {
+        if (!state.on) return;
         if (state.overwrite) {
-          state.current = "0.";
+          state.current = '0.';
           state.overwrite = false;
-          updateDisplay();
-          return;
+        } else if (!state.current.includes('.')) {
+          state.current += '.';
         }
-        if (!state.current.includes(".")) {
-          state.current += ".";
-          updateDisplay();
-        }
+        render();
       }
-
       function clearAll() {
-        state.current = "0";
-        state.previous = null;
-        state.operator = null;
-        state.overwrite = false;
-        updateDisplay();
+        state.current = '0'; state.prev = null; state.op = null; state.overwrite = true; render();
       }
-
-      function clearEntry() {
-        state.current = "0";
-        state.overwrite = false;
-        updateDisplay();
+      function clearEntry() { state.current = '0'; state.overwrite = true; render(); }
+      function sign() {
+        if (!state.on) return; if (state.current === '0') return;
+        state.current = String(-parseFloat(state.current)); render();
       }
-
-      function toggleSign() {
-        if (state.current.startsWith("-")) {
-          state.current = state.current.slice(1);
-        } else if (state.current !== "0") {
-          state.current = `-${state.current}`;
-        }
-        updateDisplay();
-      }
-
-      function toPercent() {
-        const value = parseFloat(state.current.replace(/\u2009/g, ""));
-        if (!isNaN(value)) {
-          state.current = formatNumber(value / 100);
-          state.overwrite = true;
-          updateDisplay();
-        }
-      }
-
-      function memoryAdd() {
-        const value = parseFloat(state.current.replace(/\u2009/g, ""));
-        if (!isNaN(value)) {
-          state.memory += value;
-          state.overwrite = true;
-          updateMemoryIndicator();
-        }
-      }
-
-      function memorySubtract() {
-        const value = parseFloat(state.current.replace(/\u2009/g, ""));
-        if (!isNaN(value)) {
-          state.memory -= value;
-          state.overwrite = true;
-          updateMemoryIndicator();
-        }
-      }
-
-      function memoryRecall() {
-        state.current = formatNumber(state.memory);
-        state.overwrite = true;
-        updateDisplay();
-      }
-
-      function memoryClear() {
-        state.memory = 0;
-        updateMemoryIndicator();
-      }
-
-      function setOperator(op) {
-        const currentValue = parseFloat(state.current.replace(/\u2009/g, ""));
-        if (state.operator && state.previous !== null && !state.overwrite) {
-          const operatorInfo = operators[state.operator];
-          const result = operatorInfo.exec(state.previous, currentValue);
-          state.current = formatNumber(result);
-          state.previous = result;
-          updateDisplay();
+      function setOp(op) {
+        if (!state.on) return;
+        const cur = parseFloat(state.current);
+        if (state.op && state.prev != null && !state.overwrite) {
+          const res = calc(state.prev, cur, state.op);
+          state.current = String(res);
+          state.prev = res;
         } else {
-          state.previous = currentValue;
+          state.prev = cur;
         }
-        state.operator = op;
+        state.op = op;
         state.overwrite = true;
+        render();
+      }
+      function equals() {
+        if (!state.on || !state.op || state.prev == null) return;
+        const res = calc(state.prev, parseFloat(state.current), state.op);
+        state.current = String(res);
+        state.prev = null; state.op = null; state.overwrite = true; render();
+      }
+      function calc(a,b,op){
+        switch(op){ case '+': return a+b; case '-': return a-b; case '*': return a*b; case '/': return b===0?NaN:a/b; default: return b; }
       }
 
-      function evaluate() {
-        if (!state.operator || state.previous === null) {
-          return;
-        }
-        const currentValue = parseFloat(state.current.replace(/\u2009/g, ""));
-        const operatorInfo = operators[state.operator];
-        const result = operatorInfo.exec(state.previous, currentValue);
-        state.current = formatNumber(result);
-        state.previous = null;
-        state.operator = null;
-        state.overwrite = true;
-        updateDisplay();
-      }
-
-      keypad.addEventListener("click", (event) => {
-        const target = event.target;
-        if (!(target instanceof HTMLButtonElement)) return;
-
-        const digit = target.dataset.digit;
-        const op = target.dataset.op;
-        const action = target.dataset.action;
-
-        if (digit) {
-          inputDigit(digit);
-          return;
-        }
-
-        if (op) {
-          setOperator(op);
-          return;
-        }
-
-        switch (action) {
-          case "clear":
-            clearAll();
-            break;
-          case "clear-entry":
-            clearEntry();
-            break;
-          case "sign":
-            toggleSign();
-            break;
-          case "percent":
-            toPercent();
-            break;
-          case "decimal":
-            inputDecimal();
-            break;
-          case "double-zero":
-            inputDoubleZero();
-            break;
-          case "equals":
-            evaluate();
-            break;
-          case "memory-add":
-            memoryAdd();
-            break;
-          case "memory-subtract":
-            memorySubtract();
-            break;
-          case "memory-recall":
-            memoryRecall();
-            break;
-          case "memory-clear":
-            memoryClear();
-            break;
-          default:
-            break;
+      grid.addEventListener('click', (e)=>{
+        const t = e.target.closest('.key'); if(!t) return;
+        const d = t.getAttribute('data-digit');
+        const op = t.getAttribute('data-op');
+        const action = t.getAttribute('data-action');
+        if (d) return inputDigit(d);
+        if (op) return setOp(op);
+        switch(action){
+          case 'decimal': return inputDecimal();
+          case 'clear': return clearAll();
+          case 'clear-entry': return clearEntry();
+          case 'sign': return sign();
+          case 'equals': return equals();
+          case 'mem-add': case 'mem-sub': case 'mem-recall': case 'mem-clear':
+            return;
         }
       });
 
-      updateMemoryIndicator();
-      updateDisplay();
+      swPower.addEventListener('click', ()=>{
+        const p = swPower.getAttribute('data-pos') === 'on' ? 'off' : 'on';
+        swPower.setAttribute('data-pos', p);
+        state.on = p === 'on';
+        render();
+      });
+      swAngle.addEventListener('click', ()=>{
+        const v = swAngle.getAttribute('data-pos');
+        const next = v === '0' ? '1' : (v === '1' ? '2' : '0');
+        swAngle.setAttribute('data-pos', next);
+      });
+
+      render();
     </script>
   </body>
-</html>
+  </html>
+
