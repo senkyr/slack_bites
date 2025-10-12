@@ -7,23 +7,31 @@
     <style>
       :root {
         color-scheme: only light;
-        --body-bg: radial-gradient(circle at top, #fdf9e1 0%, #f5e7b2 40%, #f0d793 100%);
-        --shell-base: #2d2c34;
-        --shell-shadow: #1a1a22;
-        --shell-highlight: #3b3a44;
-        --screen-bg: linear-gradient(160deg, #c8d6a7, #a5b982);
-        --screen-glass: rgba(255, 255, 255, 0.32);
-        --screen-text: #141414;
-        --primary-key: #f7f2dd;
-        --primary-key-text: #332f25;
-        --accent-key: #d06c35;
-        --accent-key-text: #fff5ec;
-        --function-key: #c0b09a;
-        --function-key-text: #2d251d;
-        --grid-gap: clamp(10px, 1.4vmin, 20px);
-        --key-radius: clamp(10px, 2.2vmin, 18px);
-        --shell-padding: clamp(18px, 4vmin, 30px);
-        font-size: clamp(14px, 1.1vw + 10px, 18px);
+        font-size: clamp(14px, 1.05vw + 10px, 18px);
+        --body-bg: radial-gradient(circle at top, #f7ecdf 0%, #f2d4bc 42%, #e3bca0 100%);
+        --shell-highlight: #e7b29c;
+        --shell-base: #c37763;
+        --shell-shadow: #8f4637;
+        --shell-edge: rgba(82, 37, 26, 0.6);
+        --shell-padding: clamp(26px, 6vw, 40px);
+        --screen-bg: linear-gradient(150deg, #fbf4df 0%, #efe2c7 55%, #dfcfb3 100%);
+        --screen-border: #594334;
+        --screen-text: #22170f;
+        --screen-gloss: rgba(255, 255, 255, 0.42);
+        --digit-glow: rgba(35, 24, 18, 0.35);
+        --grid-gap: clamp(12px, 2.6vmin, 20px);
+        --key-radius: clamp(14px, 3vmin, 20px);
+        --key-face: linear-gradient(160deg, #f6ebdc 0%, #e3d0bc 55%, #cdb49d 100%);
+        --key-shadow: #b29881;
+        --key-text: #352118;
+        --function-face: linear-gradient(160deg, #dfcbb6 0%, #c6ae98 52%, #af9783 100%);
+        --function-text: #2f1f17;
+        --operator-face: linear-gradient(160deg, #d7c7b4 0%, #bca894 55%, #a38c79 100%);
+        --operator-text: #2a1b15;
+        --equals-face: linear-gradient(155deg, #c96e58 0%, #ac4f3d 58%, #923f32 100%);
+        --equals-shadow: #703124;
+        --equals-text: #fef3e7;
+        --font-family-base: "IBM Plex Mono", "Courier New", "Lucida Console", monospace;
       }
 
       * {
@@ -37,13 +45,14 @@
         align-items: center;
         justify-content: center;
         background: var(--body-bg);
-        font-family: "Courier New", "Lucida Console", monospace;
-        color: #222;
+        font-family: var(--font-family-base);
+        color: #33231b;
+        padding: clamp(30px, 6vh, 80px) clamp(16px, 5vw, 48px);
       }
 
       .calculator-wrapper {
         position: relative;
-        width: min(420px, 92vw);
+        width: min(440px, 92vw);
       }
 
       .shell-svg {
@@ -52,41 +61,71 @@
         width: 100%;
         height: 100%;
         pointer-events: none;
-        filter: drop-shadow(0 18px 24px rgba(0, 0, 0, 0.25));
+        filter: drop-shadow(0 26px 36px rgba(111, 57, 40, 0.35));
       }
 
       .calculator {
         position: relative;
-        padding: calc(var(--shell-padding) * 1.1) var(--shell-padding);
-        border-radius: clamp(26px, 6vmin, 38px);
-        background: linear-gradient(120deg, var(--shell-highlight) 0%, var(--shell-base) 55%, var(--shell-shadow) 100%);
+        padding: var(--shell-padding);
+        border-radius: clamp(34px, 9vmin, 52px);
+        background: linear-gradient(135deg, var(--shell-highlight) 0%, var(--shell-base) 48%, var(--shell-shadow) 100%);
+        border: 1px solid var(--shell-edge);
         display: flex;
         flex-direction: column;
-        gap: clamp(18px, 4vmin, 28px);
+        gap: clamp(20px, 4.6vmin, 32px);
+        overflow: hidden;
+      }
+
+      .calculator::before {
+        content: "";
+        position: absolute;
+        inset: clamp(6px, 1.6vmin, 12px);
+        border-radius: clamp(28px, 8vmin, 42px);
+        background: linear-gradient(140deg, rgba(255, 255, 255, 0.18), rgba(255, 255, 255, 0) 55%);
+        pointer-events: none;
+        mix-blend-mode: screen;
       }
 
       .branding {
+        position: relative;
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        font-size: 0.8rem;
-        letter-spacing: 0.24em;
+        align-items: baseline;
+        font-size: 0.82rem;
+        letter-spacing: 0.28em;
         text-transform: uppercase;
-        color: #d8d3bf;
+        color: rgba(56, 30, 20, 0.72);
       }
 
       .branding span:last-child {
-        font-size: 0.7rem;
-        letter-spacing: 0.3em;
-        color: #9e9985;
+        font-size: 0.68rem;
+        letter-spacing: 0.34em;
+        color: rgba(56, 30, 20, 0.54);
+      }
+
+      .indicator {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: clamp(4px, 1vmin, 8px);
+        padding: clamp(6px, 1.6vmin, 10px) clamp(12px, 2.8vmin, 18px);
+        border-radius: clamp(14px, 3.6vmin, 20px);
+        background: linear-gradient(135deg, #4f3b2f 0%, #2d2119 100%);
+        box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.38), inset 0 -2px 4px rgba(255, 255, 255, 0.08);
+      }
+
+      .indicator span {
+        border-radius: 6px;
+        background: linear-gradient(180deg, #362821 0%, #1f1712 100%);
+        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.06);
       }
 
       .display {
         position: relative;
-        padding: clamp(18px, 4vmin, 26px);
-        border-radius: clamp(16px, 3.5vmin, 24px);
+        padding: clamp(26px, 5.4vmin, 34px) clamp(22px, 5vmin, 30px);
+        border-radius: clamp(20px, 4.6vmin, 28px);
         background: var(--screen-bg);
-        box-shadow: inset 0 6px 12px rgba(0, 0, 0, 0.18);
+        border: 2px solid var(--screen-border);
+        box-shadow: inset 0 12px 18px rgba(71, 52, 40, 0.26), inset 0 -16px 22px rgba(0, 0, 0, 0.2);
         color: var(--screen-text);
         text-align: right;
         overflow: hidden;
@@ -96,23 +135,18 @@
         content: "";
         position: absolute;
         inset: 0;
-        background: linear-gradient(120deg, transparent 20%, var(--screen-glass) 55%, transparent 90%);
-        mix-blend-mode: screen;
+        background: linear-gradient(115deg, transparent 20%, var(--screen-gloss) 60%, transparent 92%);
         pointer-events: none;
-      }
-
-      .display-history {
-        font-size: 0.8rem;
-        min-height: 1rem;
-        opacity: 0.65;
-        letter-spacing: 0.08em;
+        mix-blend-mode: screen;
       }
 
       .display-value {
-        font-size: clamp(2.4rem, 8vw, 3.6rem);
+        position: relative;
+        font-size: clamp(2.8rem, 9vw, 3.9rem);
         font-variant-numeric: tabular-nums;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.18em;
         word-break: break-all;
+        text-shadow: 0 3px 4px var(--digit-glow);
       }
 
       .keypad {
@@ -122,76 +156,71 @@
       }
 
       button {
-        position: relative;
-        border: none;
+        border: 1px solid rgba(61, 42, 32, 0.28);
         border-radius: var(--key-radius);
-        padding: clamp(16px, 4vmin, 20px);
-        font-size: 1.2rem;
+        padding: clamp(16px, 4.2vmin, 22px);
+        background: var(--key-face);
+        color: var(--key-text);
+        font-family: var(--font-family-base);
+        font-size: clamp(1.05rem, 2.6vmin, 1.25rem);
         font-weight: 600;
-        letter-spacing: 0.05em;
+        letter-spacing: 0.04em;
         cursor: pointer;
-        transition: transform 0.08s ease, box-shadow 0.12s ease;
-        box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.2), inset 0 -4px 0 rgba(0, 0, 0, 0.25), 0 3px 8px rgba(0, 0, 0, 0.28);
-        text-transform: uppercase;
+        transition: transform 0.12s ease, box-shadow 0.14s ease, filter 0.14s ease;
+        box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.65), inset 0 -5px 8px rgba(0, 0, 0, 0.18), 0 6px 0 var(--key-shadow), 0 10px 18px rgba(47, 26, 18, 0.22);
+        text-transform: none;
       }
 
-      button:focus {
-        outline: 3px solid rgba(255, 255, 255, 0.28);
-        outline-offset: 2px;
+      button:hover {
+        filter: brightness(1.05);
+      }
+
+      button:focus-visible {
+        outline: 3px solid rgba(255, 249, 236, 0.5);
+        outline-offset: 3px;
       }
 
       button:active {
-        transform: translateY(2px);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), inset 0 -2px 0 rgba(0, 0, 0, 0.25), 0 2px 4px rgba(0, 0, 0, 0.2);
+        transform: translateY(3px);
+        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.55), inset 0 -3px 6px rgba(0, 0, 0, 0.18), 0 3px 0 var(--key-shadow), 0 6px 12px rgba(47, 26, 18, 0.18);
       }
 
       .key-function {
-        background: linear-gradient(120deg, var(--function-key) 0%, #a28f78 100%);
-        color: var(--function-key-text);
+        background: var(--function-face);
+        color: var(--function-text);
       }
 
       .key-operator {
-        background: linear-gradient(120deg, #847d9f 0%, #5e597a 100%);
-        color: #f2efea;
-      }
-
-      .key-digit {
-        background: linear-gradient(120deg, var(--primary-key) 0%, #e7dac1 100%);
-        color: var(--primary-key-text);
+        background: var(--operator-face);
+        color: var(--operator-text);
       }
 
       .key-equals {
-        background: linear-gradient(120deg, var(--accent-key) 0%, #9d4a1f 100%);
-        color: var(--accent-key-text);
+        background: var(--equals-face);
+        color: var(--equals-text);
+        box-shadow: inset 0 3px 4px rgba(255, 255, 255, 0.5), inset 0 -6px 8px rgba(0, 0, 0, 0.22), 0 6px 0 var(--equals-shadow), 0 12px 18px rgba(58, 24, 18, 0.28);
+      }
+
+      .key-equals:active {
+        box-shadow: inset 0 2px 3px rgba(255, 255, 255, 0.45), inset 0 -4px 6px rgba(0, 0, 0, 0.22), 0 3px 0 var(--equals-shadow), 0 6px 12px rgba(58, 24, 18, 0.24);
       }
 
       .key-zero {
         grid-column: span 2;
       }
 
-      .indicator {
-        display: flex;
-        gap: 6px;
-        margin-top: -10px;
-        margin-bottom: -10px;
-      }
-
-      .indicator span {
-        flex: 1;
-        height: 4px;
-        border-radius: 10px;
-        background: linear-gradient(90deg, rgba(245, 236, 200, 0.8), rgba(150, 130, 100, 0.5));
-        opacity: 0.6;
-      }
-
-      @media (max-width: 440px) {
+      @media (max-width: 480px) {
         :root {
-          --grid-gap: clamp(8px, 2vw, 12px);
-          --key-radius: clamp(10px, 4vw, 16px);
+          --grid-gap: clamp(10px, 4vw, 14px);
+          --key-radius: clamp(12px, 5vw, 18px);
+        }
+
+        .branding {
+          letter-spacing: 0.2em;
         }
 
         button {
-          font-size: 1rem;
+          font-size: clamp(0.95rem, 4vw, 1.05rem);
         }
       }
     </style>
@@ -201,13 +230,13 @@
       <svg class="shell-svg" viewBox="0 0 420 600" aria-hidden="true">
         <defs>
           <linearGradient id="shell-edge" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="#5b5967" />
-            <stop offset="60%" stop-color="#2d2c34" />
-            <stop offset="100%" stop-color="#16161d" />
+            <stop offset="0%" stop-color="#f4c7b0" />
+            <stop offset="55%" stop-color="#c37763" />
+            <stop offset="100%" stop-color="#874335" />
           </linearGradient>
           <linearGradient id="shell-glow" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stop-color="rgba(255, 255, 255, 0.22)" />
-            <stop offset="40%" stop-color="rgba(255, 255, 255, 0)" />
+            <stop offset="0%" stop-color="rgba(255, 248, 240, 0.42)" />
+            <stop offset="45%" stop-color="rgba(255, 255, 255, 0)" />
           </linearGradient>
         </defs>
         <path
@@ -217,7 +246,7 @@
         <path
           d="M78 36h264c18.778 0 34 15.222 34 34v460c0 18.778-15.222 34-34 34H78c-18.778 0-34-15.222-34-34V70c0-18.778 15.222-34 34-34Z"
           fill="url(#shell-glow)"
-          opacity="0.4"
+          opacity="0.5"
         />
       </svg>
       <div class="calculator" role="application" aria-label="Retro kalkulačka">
@@ -229,9 +258,11 @@
           <span></span>
           <span></span>
           <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
         </div>
         <div class="display" aria-live="polite">
-          <div class="display-history" id="display-history">&nbsp;</div>
           <div class="display-value" id="display-value">0</div>
         </div>
         <div class="keypad">
@@ -263,7 +294,6 @@
     </div>
     <script>
       const displayValueEl = document.getElementById("display-value");
-      const displayHistoryEl = document.getElementById("display-history");
       const keypad = document.querySelector(".keypad");
 
       const state = {
@@ -307,11 +337,6 @@
 
       function updateDisplay() {
         displayValueEl.textContent = state.current;
-        if (state.previous !== null && state.operator) {
-          displayHistoryEl.textContent = `${formatNumber(state.previous)} ${operators[state.operator].symbol}`;
-        } else {
-          displayHistoryEl.innerHTML = "&nbsp;";
-        }
       }
 
       function inputDigit(digit) {
