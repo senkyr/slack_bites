@@ -1,36 +1,124 @@
 <!DOCTYPE html>
-<html lang="cs">
+<html lang="cs" data-theme="dark">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>Snake (monochrome, responsive)</title>
   <style>
     :root {
+      color-scheme: dark;
       --bg: #0f0f10;
-      --fg: #e8e8e8;
-      --mid: #9a9a9a;
+      --fg: #f3f3f3;
+      --mid: #9a9a9f;
       --grid: #1a1a1c;
       --accent: #cfcfcf;
+      --border: #2a2a2d;
+      --panel: #141416;
+      --panel-alt: #19191c;
+      --btn-hover: #1f1f23;
+      --canvas-outline: #151517;
+      --kbd-bg: #19191c;
+      --overlay: rgba(0, 0, 0, 0.35);
+      --game-over: #ddd;
     }
-    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif; overflow: hidden; }
+    :root[data-theme="light"] {
+      color-scheme: light;
+      --bg: #f4f6fb;
+      --fg: #17181d;
+      --mid: #5f6374;
+      --grid: #d6dae6;
+      --accent: #282c36;
+      --border: #c4c8d5;
+      --panel: #ffffff;
+      --panel-alt: #eef2fa;
+      --btn-hover: #e6ebf6;
+      --canvas-outline: #ccd2e1;
+      --kbd-bg: #e3e7f2;
+      --overlay: rgba(255, 255, 255, 0.72);
+      --game-over: #2a2e3a;
+    }
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial, sans-serif;
+      overflow: hidden;
+      transition: background 0.25s ease, color 0.25s ease;
+    }
     .wrap { display: grid; grid-template-rows: auto 1fr auto; min-height: 100%; }
-    header { padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid #171718; }
+    header {
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel);
+    }
     header .title { font-weight: 600; letter-spacing: .2px; }
-    header .hud { display: flex; gap: 16px; align-items: center; font-variant-numeric: tabular-nums; }
-    header button { background: transparent; color: var(--fg); border: 1px solid #2a2a2d; padding: 6px 10px; border-radius: 6px; cursor: pointer; }
-    header button:hover { border-color: #3a3a3f; }
+    header .hud { display: flex; gap: 12px; align-items: center; font-variant-numeric: tabular-nums; flex-wrap: wrap; }
+    header button {
+      background: var(--panel-alt);
+      color: var(--fg);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    header button:hover,
+    header button:focus-visible {
+      background: var(--btn-hover);
+      border-color: var(--accent);
+      outline: none;
+    }
 
     .game { display: grid; place-items: center; padding: 10px; }
-    canvas { display: block; background: var(--bg); border-radius: 10px; box-shadow: 0 0 0 1px #151517 inset; image-rendering: pixelated; }
+    canvas {
+      display: block;
+      background: var(--bg);
+      border-radius: 10px;
+      box-shadow: 0 0 0 1px var(--canvas-outline) inset;
+      image-rendering: pixelated;
+      transition: background 0.25s ease, box-shadow 0.25s ease;
+    }
 
-    footer { padding: 10px 14px 16px; color: var(--mid); font-size: 0.9rem; display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-    kbd { background: #19191c; border: 1px solid #2a2a2d; padding: 2px 6px; border-radius: 4px; color: var(--accent); }
+    footer {
+      padding: 10px 14px 16px;
+      color: var(--mid);
+      font-size: 0.9rem;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+      background: var(--panel);
+      border-top: 1px solid var(--border);
+    }
+    kbd {
+      background: var(--kbd-bg);
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--accent);
+    }
 
     /* Touch controls (visible on touch/coarse pointers) */
     .pad { position: fixed; bottom: 16px; right: 16px; display: none; gap: 8px; user-select: none; touch-action: none; }
     .pad .col { display: grid; gap: 8px; }
-    .btn { width: 56px; height: 56px; display: grid; place-items: center; border-radius: 10px; background: #141416; border: 1px solid #2a2a2d; color: var(--fg); font-size: 20px; }
-    .btn:active { background: #16181a; }
+    .btn {
+      width: 56px;
+      height: 56px;
+      display: grid;
+      place-items: center;
+      border-radius: 10px;
+      background: var(--panel-alt);
+      border: 1px solid var(--border);
+      color: var(--fg);
+      font-size: 20px;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .btn:active { background: var(--btn-hover); }
     @media (hover: none) and (pointer: coarse) {
       .pad { display: grid; grid-template-columns: auto auto auto; }
       .btn { width: clamp(52px, 14vw, 72px); height: clamp(52px, 14vw, 72px); font-size: clamp(18px, 5vw, 24px); }
@@ -45,9 +133,10 @@
     <header>
       <div class="title">Had — monochromatický, responzivní</div>
       <div class="hud">
+        <button id="btn-theme" type="button" aria-pressed="false" aria-label="Přepnout na světlý režim">Světlý režim</button>
         <div>Skóre: <span id="score">0</span></div>
-        <button id="btn-pause" aria-pressed="false">Pozastavit</button>
-        <button id="btn-restart">Restart</button>
+        <button id="btn-pause" type="button" aria-pressed="false">Pozastavit</button>
+        <button id="btn-restart" type="button">Restart</button>
       </div>
     </header>
     <main class="game">
@@ -82,6 +171,58 @@
     const scoreEl = document.getElementById('score');
     const pauseBtn = document.getElementById('btn-pause');
     const restartBtn = document.getElementById('btn-restart');
+    const themeBtn = document.getElementById('btn-theme');
+    const themeMeta = document.querySelector('meta[name="theme-color"]');
+    const prefersLight = window.matchMedia ? window.matchMedia('(prefers-color-scheme: light)') : null;
+    const THEME_KEY = 'snake-theme';
+    let currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+
+    function applyTheme(theme, { persist = true } = {}) {
+      currentTheme = theme === 'light' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', currentTheme);
+      const rootStyles = getComputedStyle(document.documentElement);
+      const bgColor = rootStyles.getPropertyValue('--bg').trim();
+      if (bgColor && themeMeta) { themeMeta.setAttribute('content', bgColor); }
+      if (themeBtn) {
+        const nextTheme = currentTheme === 'light' ? 'tmavý' : 'světlý';
+        themeBtn.textContent = currentTheme === 'light' ? 'Tmavý režim' : 'Světlý režim';
+        themeBtn.setAttribute('aria-label', `Přepnout na ${nextTheme} režim`);
+        themeBtn.setAttribute('aria-pressed', currentTheme === 'light' ? 'true' : 'false');
+      }
+      if (persist) {
+        try { localStorage.setItem(THEME_KEY, currentTheme); } catch (err) { /* ignore */ }
+      }
+      if (state.food) { draw(); }
+    }
+
+    function initTheme() {
+      let chosen = 'dark';
+      try {
+        const stored = localStorage.getItem(THEME_KEY);
+        if (stored === 'light' || stored === 'dark') {
+          chosen = stored;
+        } else if (prefersLight?.matches) {
+          chosen = 'light';
+        }
+      } catch (err) {
+        if (prefersLight?.matches) { chosen = 'light'; }
+      }
+      applyTheme(chosen, { persist: false });
+    }
+
+    themeBtn?.addEventListener('click', () => {
+      applyTheme(currentTheme === 'light' ? 'dark' : 'light');
+    });
+
+    prefersLight?.addEventListener('change', (event) => {
+      try {
+        if (!localStorage.getItem(THEME_KEY)) {
+          applyTheme(event.matches ? 'light' : 'dark', { persist: false });
+        }
+      } catch (err) {
+        applyTheme(event.matches ? 'light' : 'dark', { persist: false });
+      }
+    });
 
     // Game state
     let grid = 24; // cells per side (adaptive later)
@@ -179,9 +320,10 @@
 
     function draw() {
       // background and grid
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--bg');
+      const styles = getComputedStyle(document.documentElement);
+      ctx.fillStyle = styles.getPropertyValue('--bg');
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      const g = getComputedStyle(document.documentElement).getPropertyValue('--grid');
+      const g = styles.getPropertyValue('--grid');
       ctx.strokeStyle = g; ctx.lineWidth = 1;
       for (let i = 1; i < grid; i++) {
         const p = Math.floor(i * cell) + 0.5;
@@ -190,12 +332,12 @@
       }
 
       // food
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--mid');
+      ctx.fillStyle = styles.getPropertyValue('--mid');
       roundRect(ctx, state.food.x * cell + 2, state.food.y * cell + 2, cell - 4, cell - 4, 5);
       ctx.fill();
 
       // snake
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--fg');
+      ctx.fillStyle = styles.getPropertyValue('--fg');
       state.snake.forEach((s, idx) => {
         const r = idx === 0 ? 8 : 6;
         roundRect(ctx, s.x * cell + 1, s.y * cell + 1, cell - 2, cell - 2, r);
@@ -204,9 +346,11 @@
 
       // game over overlay
       if (!state.alive) {
-        ctx.fillStyle = 'rgba(0,0,0,0.35)';
+        const overlay = styles.getPropertyValue('--overlay').trim() || 'rgba(0,0,0,0.35)';
+        const gameOverColor = styles.getPropertyValue('--game-over').trim() || '#ddd';
+        ctx.fillStyle = overlay;
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = '#ddd';
+        ctx.fillStyle = gameOverColor;
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
         ctx.font = Math.floor(canvas.width * 0.06) + 'px system-ui, sans-serif';
@@ -285,6 +429,7 @@
     });
 
     // Start
+    initTheme();
     init();
   })();
   </script>
