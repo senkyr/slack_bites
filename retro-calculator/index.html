@@ -43,7 +43,7 @@
         background: linear-gradient(#1b1b1b, var(--case));
         border-radius: 22px;
         box-shadow: 0 10px 30px rgba(0,0,0,.45);
-        padding: 18px 18px 22px;
+        padding: 22px 18px 12px;
         color: #111;
       }
 
@@ -152,10 +152,13 @@
         font-weight: 700; letter-spacing: .08em; font-size: 26px;
       }
       .foot span { color: #1a1a1a; text-shadow: 0 1px 0 #fff; }
+          /* Inner wrapper that we vertically scale only when needed */
+      .device-inner { transform-origin: top center; }
     </style>
   </head>
   <body>
     <div class="device" role="application" aria-label="MR 610 kalkulačka">
+      <div class="device-inner">
       <div class="window">
         <div class="lcd" id="lcd">0.</div>
       </div>
@@ -236,9 +239,52 @@
 
         <div class="foot"><span>MR 610</span></div>
       </div>
+      </div>
     </div>
 
     <script>
+
+      // Keep calculator at reference aspect ratio unless viewport is too short.
+      // Reference image size: 1146 x 2227 (W x H) => height/width ratio ≈ 1.9445
+      (function(){
+        const RATIO = 2227/1146; // device height per 1px of width
+        const device = document.querySelector('.device');
+        const inner = document.querySelector('.device-inner');
+
+        function num(v){ return parseFloat(v)||0; }
+
+        function layout(){
+          if (!device || !inner) return;
+          // Reset to natural to measure correctly
+          inner.style.transform = 'none';
+          inner.style.height = 'auto';
+
+          const w = device.clientWidth;
+          const idealDeviceH = Math.round(w * RATIO);
+
+          const cs = getComputedStyle(device);
+          const padV = num(cs.paddingTop) + num(cs.paddingBottom);
+
+          const bodyCS = getComputedStyle(document.body);
+          const bodyPadV = num(bodyCS.paddingTop) + num(bodyCS.paddingBottom);
+          const availDeviceH = Math.max(0, document.documentElement.clientHeight - bodyPadV);
+
+          // Target device height and target inner visible height
+          const targetDeviceH = Math.max(0, Math.min(idealDeviceH, availDeviceH));
+          device.style.height = targetDeviceH + 'px';
+
+          const naturalInnerH = inner.offsetHeight; // after reset
+          const targetInnerH = Math.max(0, targetDeviceH - padV);
+
+          const k = naturalInnerH ? (targetInnerH / naturalInnerH) : 1;
+          inner.style.transform = k ? ('scaleY(' + k + ')') : 'none';
+          inner.style.height = naturalInnerH + 'px';
+        }
+
+        window.addEventListener('resize', layout, { passive: true });
+        window.addEventListener('orientationchange', layout, { passive: true });
+        window.requestAnimationFrame(layout);
+      })();
       const lcd = document.getElementById('lcd');
       const grid = document.getElementById('grid');
       const swPower = document.getElementById('sw-power');
@@ -328,9 +374,23 @@
       });
 
       swPower.addEventListener('click', ()=>{
-        const p = swPower.getAttribute('data-pos') === 'on' ? 'off' : 'on';
-        swPower.setAttribute('data-pos', p);
-        state.on = p === 'on';
+        const next = swPower.getAttribute('data-pos') === 'on' ? 'off' : 'on';
+        swPower.setAttribute('data-pos', next);
+        if (next === 'off') {
+          // Powering off: clear all runtime state and blank the display
+          state.on = false;
+          state.current = '0';
+          state.prev = null;
+          state.op = null;
+          state.overwrite = true;
+        } else {
+          // Powering on: start fresh like a real device
+          state.on = true;
+          state.current = '0';
+          state.prev = null;
+          state.op = null;
+          state.overwrite = true;
+        }
         render();
       });
       swAngle.addEventListener('click', ()=>{
